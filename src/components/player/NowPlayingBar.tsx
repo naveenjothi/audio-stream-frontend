@@ -167,109 +167,115 @@ export function NowPlayingBar({
   const trackDuration = duration || displayTrack.duration / 1000;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50">
-      {/* Background blur */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black via-zinc-900/95 to-zinc-900/90 backdrop-blur-xl border-t border-zinc-800/50" />
+    <div className="fixed bottom-4 left-4 right-4 z-50">
+      {/* Floating Glass Bar */}
+      <div className="glass-panel rounded-2xl overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.5)] border border-white/10">
+        {/* Progress Bar Glow */}
+        <div 
+          className="absolute top-0 left-0 h-[2px] bg-primary-500 shadow-[0_0_10px_rgba(16,185,129,0.5)] transition-all duration-100 ease-linear z-10"
+          style={{ width: `${(currentTime / trackDuration) * 100}%` }}
+        />
 
-      <div className="relative px-4 py-3">
-        <div className="max-w-screen-2xl mx-auto">
-          {/* Progress bar at top for mobile */}
-          <div className="md:hidden mb-3">
-            <SeekBar
-              currentTime={currentTime}
-              duration={trackDuration}
-              buffered={buffered}
-              onSeek={handleSeek}
-              isLoading={isLoading}
-            />
-          </div>
-
-          <div className="flex items-center justify-between gap-4">
-            {/* Left: Track info */}
-            <div
-              className="flex-1 min-w-0 max-w-xs group cursor-pointer"
-              onClick={onOpenFullscreen}
-            >
-              <TrackInfo
-                title={displayTrack.title}
-                artist={displayTrack.artist}
-                album={displayTrack.album}
-                coverUrl={displayTrack.albumArt}
-                isPlaying={isPlaying && !isBuffering}
-                isLiked={isLiked}
-                onLikeToggle={() => setIsLiked(!isLiked)}
+        <div className="relative px-4 py-3">
+          <div className="max-w-screen-2xl mx-auto">
+            {/* Mobile Progress */}
+            <div className="md:hidden mb-3">
+              <SeekBar
+                currentTime={currentTime}
+                duration={trackDuration}
+                buffered={buffered}
+                onSeek={handleSeek}
+                isLoading={isLoading}
               />
             </div>
 
-            {/* Center: Controls + Seek */}
-            <div className="flex-1 max-w-2xl hidden md:flex flex-col items-center gap-2">
-              <PlaybackControls
-                isPlaying={isPlaying}
-                isLoading={isLoading}
-                isBuffering={isBuffering}
-                onPlayPause={handlePlayPause}
-                onNext={onNext}
-                onPrevious={onPrevious}
-                shuffle={shuffle}
-                onShuffleToggle={() => setShuffle(!shuffle)}
-                repeatMode={repeatMode}
-                onRepeatToggle={handleRepeatToggle}
-                canGoNext={canGoNext}
-                canGoPrevious={canGoPrevious}
-              />
-
-              <div className="w-full max-w-lg">
-                <SeekBar
-                  currentTime={currentTime}
-                  duration={trackDuration}
-                  buffered={buffered}
-                  onSeek={handleSeek}
-                  isLoading={isLoading}
+            <div className="flex items-center justify-between gap-4">
+              {/* Left: Track info */}
+              <div
+                className="flex-1 min-w-0 max-w-xs group cursor-pointer"
+                onClick={onOpenFullscreen}
+              >
+                <TrackInfo
+                  title={displayTrack.title}
+                  artist={displayTrack.artist}
+                  album={displayTrack.album}
+                  coverUrl={displayTrack.albumArt}
+                  isPlaying={isPlaying && !isBuffering}
+                  isLiked={isLiked}
+                  onLikeToggle={() => setIsLiked(!isLiked)}
                 />
               </div>
-            </div>
 
-            {/* Mobile controls */}
-            <div className="md:hidden">
-              <PlaybackControls
-                isPlaying={isPlaying}
-                isLoading={isLoading}
-                isBuffering={isBuffering}
-                onPlayPause={handlePlayPause}
-                onNext={onNext}
-                onPrevious={onPrevious}
-                canGoNext={canGoNext}
-                canGoPrevious={canGoPrevious}
-                size="sm"
-              />
-            </div>
+              {/* Center: Controls + Seek */}
+              <div className="flex-1 max-w-2xl hidden md:flex flex-col items-center gap-2">
+                <PlaybackControls
+                  isPlaying={isPlaying}
+                  isLoading={isLoading}
+                  isBuffering={isBuffering}
+                  onPlayPause={handlePlayPause}
+                  onNext={onNext}
+                  onPrevious={onPrevious}
+                  shuffle={shuffle}
+                  onShuffleToggle={() => setShuffle(!shuffle)}
+                  repeatMode={repeatMode}
+                  onRepeatToggle={handleRepeatToggle}
+                  canGoNext={canGoNext}
+                  canGoPrevious={canGoPrevious}
+                />
 
-            {/* Right: Volume + extras */}
-            <div className="flex-1 max-w-xs hidden md:flex items-center justify-end gap-3">
-              <button className="p-2 text-zinc-400 hover:text-white transition-colors">
-                <ListMusic className="w-4 h-4" />
-              </button>
+                <div className="w-full max-w-lg">
+                  <SeekBar
+                    currentTime={currentTime}
+                    duration={trackDuration}
+                    buffered={buffered}
+                    onSeek={handleSeek}
+                    isLoading={isLoading}
+                  />
+                </div>
+              </div>
 
-              <button className="p-2 text-zinc-400 hover:text-white transition-colors group relative">
-                <MonitorSpeaker className="w-4 h-4" />
-                <span className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-zinc-800 rounded text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
-                  Connect to device
-                </span>
-              </button>
+              {/* Mobile controls */}
+              <div className="md:hidden">
+                <PlaybackControls
+                  isPlaying={isPlaying}
+                  isLoading={isLoading}
+                  isBuffering={isBuffering}
+                  onPlayPause={handlePlayPause}
+                  onNext={onNext}
+                  onPrevious={onPrevious}
+                  canGoNext={canGoNext}
+                  canGoPrevious={canGoPrevious}
+                  size="sm"
+                />
+              </div>
 
-              <VolumeControl
-                volume={volume}
-                onVolumeChange={handleVolumeChange}
-                isMuted={isMuted}
-                onMuteToggle={setIsMuted}
-              />
+              {/* Right: Volume + extras */}
+              <div className="flex-1 max-w-xs hidden md:flex items-center justify-end gap-3">
+                <button className="p-2 text-zinc-400 hover:text-white hover:bg-white/10 rounded-full transition-all">
+                  <ListMusic className="w-4 h-4" />
+                </button>
 
-              <button
-                onClick={onOpenFullscreen}
-                className="p-2 text-zinc-400 hover:text-white transition-colors"
-              >
-                <Maximize2 className="w-4 h-4" />
-              </button>
+                <button className="p-2 text-zinc-400 hover:text-white hover:bg-white/10 rounded-full transition-all group relative">
+                  <MonitorSpeaker className="w-4 h-4" />
+                  <span className="absolute -top-10 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-zinc-900/90 backdrop-blur border border-white/10 rounded-lg text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-xl">
+                    Connect to device
+                  </span>
+                </button>
+
+                <VolumeControl
+                  volume={volume}
+                  onVolumeChange={handleVolumeChange}
+                  isMuted={isMuted}
+                  onMuteToggle={setIsMuted}
+                />
+
+                <button
+                  onClick={onOpenFullscreen}
+                  className="p-2 text-zinc-400 hover:text-white hover:bg-white/10 rounded-full transition-all"
+                >
+                  <Maximize2 className="w-4 h-4" />
+                </button>
+              </div>
             </div>
           </div>
         </div>

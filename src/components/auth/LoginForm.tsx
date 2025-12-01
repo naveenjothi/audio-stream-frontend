@@ -4,6 +4,7 @@ import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Mail, Lock, AlertCircle, Eye, EyeOff, Loader2 } from "lucide-react";
 import { signInWithEmail, signInWithGoogle } from "@/lib/firebase";
+import { FuturisticCard, GlowButton } from "@/components/shared";
 import clsx from "clsx";
 
 function LoginFormContent({ redirect }: { redirect: string }) {
@@ -51,77 +52,79 @@ function LoginFormContent({ redirect }: { redirect: string }) {
   };
 
   return (
-    <div className="w-full max-w-md">
+    <FuturisticCard variant="glass" className="w-full max-w-md p-8 animate-float">
       {/* Header */}
-      <div className="text-center mb-8">
-        <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center">
+      <div className="text-center mb-8 relative">
+        <div className="absolute -top-20 left-1/2 -translate-x-1/2 w-32 h-32 bg-primary-500/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center shadow-[0_0_30px_rgba(16,185,129,0.3)] relative z-10 group">
+          <div className="absolute inset-0 bg-white/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
           <svg
-            className="w-10 h-10 text-white"
+            className="w-10 h-10 text-white drop-shadow-lg"
             fill="currentColor"
             viewBox="0 0 24 24"
           >
             <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
           </svg>
         </div>
-        <h1 className="text-3xl font-bold text-white mb-2">Welcome back</h1>
+        <h1 className="text-4xl font-bold text-white mb-2 tracking-tight glow-text">Welcome back</h1>
         <p className="text-zinc-400">Sign in to your audio streaming account</p>
       </div>
 
       {/* Error Alert */}
       {error && (
-        <div className="mb-6 p-4 rounded-lg bg-red-500/10 border border-red-500/20 flex items-start gap-3">
+        <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 flex items-start gap-3 animate-pulse-slow">
           <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
           <p className="text-red-400 text-sm">{error}</p>
         </div>
       )}
 
       {/* Login Form */}
-      <form onSubmit={handleEmailLogin} className="space-y-4">
-        <div>
+      <form onSubmit={handleEmailLogin} className="space-y-6">
+        <div className="space-y-2">
           <label
             htmlFor="email"
-            className="block text-sm font-medium text-zinc-300 mb-2"
+            className="block text-sm font-medium text-zinc-300 ml-1"
           >
             Email address
           </label>
-          <div className="relative">
-            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500" />
+          <div className="relative group">
+            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500 group-focus-within:text-primary-400 transition-colors duration-300" />
             <input
               id="email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
-              className="input pl-11"
+              className="input pl-12"
               required
               disabled={isLoading}
             />
           </div>
         </div>
 
-        <div>
+        <div className="space-y-2">
           <label
             htmlFor="password"
-            className="block text-sm font-medium text-zinc-300 mb-2"
+            className="block text-sm font-medium text-zinc-300 ml-1"
           >
             Password
           </label>
-          <div className="relative">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500" />
+          <div className="relative group">
+            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500 group-focus-within:text-primary-400 transition-colors duration-300" />
             <input
               id="password"
               type={showPassword ? "text" : "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              className="input pl-11 pr-11"
+              className="input pl-12 pr-12"
               required
               disabled={isLoading}
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 transition-colors"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 transition-colors p-1 rounded-full hover:bg-white/5"
               tabIndex={-1}
             >
               {showPassword ? (
@@ -133,45 +136,35 @@ function LoginFormContent({ redirect }: { redirect: string }) {
           </div>
         </div>
 
-        <button
+        <GlowButton
           type="submit"
-          disabled={isLoading}
-          className={clsx(
-            "w-full btn-primary py-3 text-lg font-semibold",
-            isLoading && "opacity-70 cursor-not-allowed"
-          )}
+          isLoading={isLoading}
+          className="w-full text-lg"
+          size="lg"
         >
-          {isLoading ? (
-            <span className="flex items-center justify-center gap-2">
-              <Loader2 className="w-5 h-5 animate-spin" />
-              Signing in...
-            </span>
-          ) : (
-            "Sign in"
-          )}
-        </button>
+          Sign in
+        </GlowButton>
       </form>
 
       {/* Divider */}
       <div className="relative my-8">
         <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-zinc-700" />
+          <div className="w-full border-t border-white/10" />
         </div>
         <div className="relative flex justify-center text-sm">
-          <span className="px-4 bg-zinc-950 text-zinc-500">
+          <span className="px-4 bg-[#0a0a0c]/80 backdrop-blur-xl text-zinc-500 rounded-full border border-white/5">
             or continue with
           </span>
         </div>
       </div>
 
       {/* Google Login */}
-      <button
+      <GlowButton
         onClick={handleGoogleLogin}
         disabled={isLoading}
-        className={clsx(
-          "w-full btn-secondary py-3 flex items-center justify-center gap-3",
-          isLoading && "opacity-70 cursor-not-allowed"
-        )}
+        variant="secondary"
+        className="w-full flex items-center justify-center gap-3"
+        size="lg"
       >
         <svg className="w-5 h-5" viewBox="0 0 24 24">
           <path
@@ -192,8 +185,8 @@ function LoginFormContent({ redirect }: { redirect: string }) {
           />
         </svg>
         Sign in with Google
-      </button>
-    </div>
+      </GlowButton>
+    </FuturisticCard>
   );
 }
 
@@ -213,16 +206,16 @@ export function LoginForm() {
 
 function LoginFormSkeleton() {
   return (
-    <div className="w-full max-w-md animate-pulse">
+    <div className="w-full max-w-md animate-pulse p-8 rounded-2xl bg-zinc-900/40 border border-white/5">
       <div className="text-center mb-8">
-        <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-zinc-800" />
+        <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-zinc-800" />
         <div className="h-8 w-48 mx-auto bg-zinc-800 rounded mb-2" />
         <div className="h-4 w-64 mx-auto bg-zinc-800 rounded" />
       </div>
-      <div className="space-y-4">
-        <div className="h-12 bg-zinc-800 rounded-lg" />
-        <div className="h-12 bg-zinc-800 rounded-lg" />
-        <div className="h-12 bg-zinc-800 rounded-lg" />
+      <div className="space-y-6">
+        <div className="h-14 bg-zinc-800 rounded-xl" />
+        <div className="h-14 bg-zinc-800 rounded-xl" />
+        <div className="h-14 bg-zinc-800 rounded-xl" />
       </div>
     </div>
   );

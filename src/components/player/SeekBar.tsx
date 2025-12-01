@@ -106,31 +106,30 @@ export function SeekBar({
 
       <div
         ref={barRef}
-        className="relative flex-1 h-1.5 cursor-pointer"
+        className="relative flex-1 h-8 flex items-center cursor-pointer group/bar"
         onMouseDown={handleMouseDown}
         onMouseMove={(e) => handleMouseMove(e)}
         onMouseLeave={handleMouseLeave}
       >
         {/* Background track */}
-        <div className="absolute inset-0 bg-zinc-700/50 rounded-full overflow-hidden">
+        <div className="absolute inset-x-0 h-1 bg-zinc-800/50 rounded-full overflow-hidden backdrop-blur-sm border border-white/5">
           {/* Buffered indicator */}
           <div
-            className="absolute inset-y-0 left-0 bg-zinc-600/50 rounded-full transition-all duration-150"
+            className="absolute inset-y-0 left-0 bg-white/10 rounded-full transition-all duration-150"
             style={{ width: `${bufferedProgress}%` }}
           />
 
           {/* Loading shimmer effect */}
           {isLoading && (
             <div className="absolute inset-0 overflow-hidden rounded-full">
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-zinc-500/20 to-transparent animate-shimmer" />
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary-500/20 to-transparent animate-shimmer" />
             </div>
           )}
 
           {/* Progress bar */}
           <div
             className={cn(
-              "absolute inset-y-0 left-0 rounded-full transition-all",
-              isDragging ? "bg-primary-400" : "bg-primary-500",
+              "absolute inset-y-0 left-0 rounded-full transition-all bg-gradient-to-r from-primary-600 to-primary-400 shadow-[0_0_10px_rgba(16,185,129,0.3)]",
               !isDragging && "duration-100"
             )}
             style={{ width: `${displayProgress}%` }}
@@ -140,7 +139,7 @@ export function SeekBar({
         {/* Hover preview time */}
         {hoverPosition !== null && !isDragging && (
           <div
-            className="absolute -top-8 transform -translate-x-1/2 px-2 py-1 bg-zinc-800 rounded text-xs text-white font-mono pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity"
+            className="absolute -top-6 transform -translate-x-1/2 px-2 py-1 bg-zinc-900/90 backdrop-blur border border-white/10 rounded text-xs text-white font-mono pointer-events-none opacity-0 group-hover/bar:opacity-100 transition-opacity shadow-xl z-20"
             style={{ left: `${hoverPosition * 100}%` }}
           >
             {formatTime(hoverPosition * duration)}
@@ -150,12 +149,14 @@ export function SeekBar({
         {/* Scrubber handle */}
         <div
           className={cn(
-            "absolute top-1/2 -translate-y-1/2 w-3.5 h-3.5 bg-white rounded-full shadow-lg transform -translate-x-1/2 transition-all",
+            "absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-white rounded-full shadow-[0_0_15px_rgba(255,255,255,0.5)] transform -translate-x-1/2 transition-all z-10",
             "opacity-0 group-hover:opacity-100 scale-0 group-hover:scale-100",
-            isDragging && "opacity-100 scale-110 ring-4 ring-primary-500/30"
+            isDragging && "opacity-100 scale-125 ring-4 ring-primary-500/30 shadow-[0_0_20px_rgba(16,185,129,0.5)]"
           )}
           style={{ left: `${displayProgress}%` }}
-        />
+        >
+            <div className="absolute inset-0 bg-primary-500 rounded-full opacity-20 animate-ping" />
+        </div>
       </div>
 
       <span className="text-xs text-zinc-400 font-mono w-10 tabular-nums">
