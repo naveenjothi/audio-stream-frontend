@@ -6,6 +6,11 @@ import {
   GoogleAuthProvider,
   signOut,
   onAuthStateChanged,
+  updatePassword as firebaseUpdatePassword,
+  EmailAuthProvider,
+  reauthenticateWithCredential,
+  deleteUser as firebaseDeleteUser,
+  createUserWithEmailAndPassword,
   User as FirebaseUser,
 } from "firebase/auth";
 
@@ -71,6 +76,83 @@ export async function getIdToken(): Promise<string | null> {
 
 export function onAuthChange(callback: (user: FirebaseUser | null) => void) {
   return onAuthStateChanged(auth, callback);
+}
+
+// Re-authenticate user with email/password (required before sensitive operations)
+export async function reauthenticateUser(password: string) {
+  const user = auth.currentUser;
+  if (!user || !user.email) {
+    return {
+      success: false,
+      error: new Error("No user logged in or no email associated"),
+    };
+  }
+
+  try {
+    const credential = EmailAuthProvider.credential(user.email, password);
+    await reauthenticateWithCredential(user, credential);
+    return { success: true, error: null };
+  } catch (error) {
+    return { success: false, error: error as Error };
+  }
+}
+
+// Update password for existing user
+export async function updateUserPassword(newPassword: string) {
+  const user = auth.currentUser;
+  if (!user) {
+    return { success: false, error: new Error("No user logged in") };
+  }
+
+  try {
+    await firebaseUpdatePassword(user, newPassword);
+    return { success: true, error: null };
+  } catch (error) {
+    return { success: false, error: error as Error };
+  }
+}
+
+// Create new account with email/password
+export async function createAccount(email: string, password: string) {
+  try {
+    const result = await createUserWithEmailAndPassword(auth, email, password);
+    return { user: result.user, error: null };
+  } catch (error) {
+    return { user: null, error: error as Error };
+  }
+}
+
+// Delete user account
+export async function deleteUserAccount() {
+  const user = auth.currentUser;
+  if (!user) {
+    return { success: false, error: new Error("No user logged in") };
+  }
+
+  try {
+    await firebaseDeleteUser(user);
+    return { success: true, error: null };
+  } catch (error) {
+    return { success: false, error: error as Error };
+  }
+}
+
+// Check if user has password provider (vs just Google)
+export function hasPasswordProvider(): boolean {
+  const user = auth.currentUser;
+  if (!user) return false;
+  return user.providerData.some(
+    (provider) => provider.providerId === "password"
+  );
+}
+
+// Check if user has Google provider
+export function hasGoogleProvider(): boolean {
+  const user = auth.currentUser;
+  if (!user) return false;
+  return user.providerData.some(
+    (provider) => provider.providerId === "google.com"
+  );
 }
 
 export { auth, app };

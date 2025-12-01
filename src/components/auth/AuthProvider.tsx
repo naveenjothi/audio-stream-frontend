@@ -22,6 +22,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const unsubscribe = onAuthChange(async (firebaseUser) => {
       if (firebaseUser) {
         const token = await firebaseUser.getIdToken();
+        console.log("firebaseUser", firebaseUser);
         setUser({
           uid: firebaseUser.uid,
           email: firebaseUser.email,

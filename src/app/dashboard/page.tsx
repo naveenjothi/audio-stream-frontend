@@ -20,7 +20,7 @@ import {
 import { AuthGuard, useAuth } from "@/components/auth";
 import { SongList } from "@/components/songs";
 import { Loading, useToast } from "@/components/shared";
-import { useDeviceStore, usePlayerStore } from "@/store";
+import { useDeviceStore, usePlayerStore, useThemeStore } from "@/store";
 import { getSongs, getPairedDevice, playSong } from "@/lib/api";
 import { logOut } from "@/lib/firebase";
 import { cn } from "@/lib/utils";
@@ -144,12 +144,28 @@ export default function DashboardPage() {
   };
 
   const connectedDevice = pairedDevice && connectionStatus === "connected";
+  const { resolvedTheme } = useThemeStore();
+  const isDark = resolvedTheme === "dark";
 
   return (
     <AuthGuard>
-      <div className="min-h-screen bg-gradient-to-b from-zinc-900 via-zinc-950 to-black text-white">
+      <div
+        className={cn(
+          "min-h-screen transition-colors duration-300",
+          isDark
+            ? "bg-gradient-to-b from-zinc-900 via-zinc-950 to-black text-white"
+            : "bg-gradient-to-b from-gray-50 via-white to-gray-100 text-zinc-900"
+        )}
+      >
         {/* Header */}
-        <header className="sticky top-0 z-40 backdrop-blur-xl bg-zinc-900/80 border-b border-zinc-800/50">
+        <header
+          className={cn(
+            "sticky top-0 z-40 backdrop-blur-xl border-b",
+            isDark
+              ? "bg-zinc-900/80 border-zinc-800/50"
+              : "bg-white/80 border-gray-200"
+          )}
+        >
           <div className="max-w-7xl mx-auto px-4 py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -172,9 +188,11 @@ export default function DashboardPage() {
                     className={cn("w-5 h-5", isRefreshing && "animate-spin")}
                   />
                 </button>
-                <button className="btn-ghost p-2" title="Settings">
-                  <Settings className="w-5 h-5" />
-                </button>
+                <Link href="/settings">
+                  <button className="btn-ghost p-2" title="Settings">
+                    <Settings className="w-5 h-5" />
+                  </button>
+                </Link>
                 <button
                   onClick={handleLogout}
                   className="btn-ghost p-2 text-red-400 hover:text-red-300"
@@ -182,8 +200,18 @@ export default function DashboardPage() {
                 >
                   <LogOut className="w-5 h-5" />
                 </button>
-                <div className="w-8 h-8 rounded-full bg-zinc-700 flex items-center justify-center ml-2">
-                  <User className="w-4 h-4 text-zinc-300" />
+                <div
+                  className={cn(
+                    "w-8 h-8 rounded-full flex items-center justify-center ml-2",
+                    isDark ? "bg-zinc-700" : "bg-gray-200"
+                  )}
+                >
+                  <User
+                    className={cn(
+                      "w-4 h-4",
+                      isDark ? "text-zinc-300" : "text-gray-600"
+                    )}
+                  />
                 </div>
               </div>
             </div>
@@ -202,7 +230,9 @@ export default function DashboardPage() {
               {greeting()}
               {user?.displayName ? `, ${user.displayName.split(" ")[0]}` : ""}
             </h1>
-            <p className="text-zinc-400">Ready to stream your music?</p>
+            <p className={isDark ? "text-zinc-400" : "text-gray-500"}>
+              Ready to stream your music?
+            </p>
           </motion.div>
 
           {/* Device status card */}
@@ -216,8 +246,12 @@ export default function DashboardPage() {
               className={cn(
                 "p-6 rounded-2xl border transition-all",
                 connectedDevice
-                  ? "bg-gradient-to-r from-primary-900/30 to-zinc-900/50 border-primary-500/30"
-                  : "bg-zinc-900/50 border-zinc-800"
+                  ? isDark
+                    ? "bg-gradient-to-r from-primary-900/30 to-zinc-900/50 border-primary-500/30"
+                    : "bg-gradient-to-r from-primary-100 to-white border-primary-300"
+                  : isDark
+                  ? "bg-zinc-900/50 border-zinc-800"
+                  : "bg-white border-gray-200 shadow-sm"
               )}
             >
               <div className="flex items-center justify-between flex-wrap gap-4">
@@ -225,13 +259,21 @@ export default function DashboardPage() {
                   <div
                     className={cn(
                       "w-14 h-14 rounded-xl flex items-center justify-center",
-                      connectedDevice ? "bg-primary-500/20" : "bg-zinc-800"
+                      connectedDevice
+                        ? "bg-primary-500/20"
+                        : isDark
+                        ? "bg-zinc-800"
+                        : "bg-gray-100"
                     )}
                   >
                     <Smartphone
                       className={cn(
                         "w-7 h-7",
-                        connectedDevice ? "text-primary-500" : "text-zinc-500"
+                        connectedDevice
+                          ? "text-primary-500"
+                          : isDark
+                          ? "text-zinc-500"
+                          : "text-gray-400"
                       )}
                     />
                   </div>
@@ -246,19 +288,35 @@ export default function DashboardPage() {
                         </>
                       ) : (
                         <>
-                          <WifiOff className="w-4 h-4 text-zinc-500" />
-                          <span className="text-sm font-medium text-zinc-500">
+                          <WifiOff
+                            className={cn(
+                              "w-4 h-4",
+                              isDark ? "text-zinc-500" : "text-gray-400"
+                            )}
+                          />
+                          <span
+                            className={cn(
+                              "text-sm font-medium",
+                              isDark ? "text-zinc-500" : "text-gray-500"
+                            )}
+                          >
                             No device connected
                           </span>
                         </>
                       )}
                     </div>
-                    <h3 className="text-lg font-semibold text-white">
+                    <h3 className="text-lg font-semibold">
                       {connectedDevice
                         ? pairedDevice.name
                         : "Connect your phone"}
                     </h3>
-                    <p className="text-sm text-zinc-400">
+                    <p
+                      className={
+                        isDark
+                          ? "text-sm text-zinc-400"
+                          : "text-sm text-gray-500"
+                      }
+                    >
                       {connectedDevice
                         ? "Ready to stream audio to your browser"
                         : "Pair your mobile device to start streaming"}
@@ -271,7 +329,9 @@ export default function DashboardPage() {
                     className={cn(
                       "px-4 py-2 rounded-full font-medium flex items-center gap-2 transition-all",
                       connectedDevice
-                        ? "bg-zinc-800 hover:bg-zinc-700 text-white"
+                        ? isDark
+                          ? "bg-zinc-800 hover:bg-zinc-700 text-white"
+                          : "bg-gray-200 hover:bg-gray-300 text-gray-800"
                         : "bg-primary-600 hover:bg-primary-500 text-white"
                     )}
                   >
@@ -299,25 +359,77 @@ export default function DashboardPage() {
             transition={{ delay: 0.2 }}
             className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8"
           >
-            <div className="p-4 bg-zinc-900/50 border border-zinc-800 rounded-xl">
+            <div
+              className={cn(
+                "p-4 rounded-xl border",
+                isDark
+                  ? "bg-zinc-900/50 border-zinc-800"
+                  : "bg-white border-gray-200 shadow-sm"
+              )}
+            >
               <Music className="w-5 h-5 text-primary-500 mb-2" />
               <p className="text-2xl font-bold">{songs.length}</p>
-              <p className="text-sm text-zinc-400">Total songs</p>
+              <p
+                className={
+                  isDark ? "text-sm text-zinc-400" : "text-sm text-gray-500"
+                }
+              >
+                Total songs
+              </p>
             </div>
-            <div className="p-4 bg-zinc-900/50 border border-zinc-800 rounded-xl">
+            <div
+              className={cn(
+                "p-4 rounded-xl border",
+                isDark
+                  ? "bg-zinc-900/50 border-zinc-800"
+                  : "bg-white border-gray-200 shadow-sm"
+              )}
+            >
               <Smartphone className="w-5 h-5 text-blue-500 mb-2" />
               <p className="text-2xl font-bold">{pairedDevice ? 1 : 0}</p>
-              <p className="text-sm text-zinc-400">Devices</p>
+              <p
+                className={
+                  isDark ? "text-sm text-zinc-400" : "text-sm text-gray-500"
+                }
+              >
+                Devices
+              </p>
             </div>
-            <div className="p-4 bg-zinc-900/50 border border-zinc-800 rounded-xl">
+            <div
+              className={cn(
+                "p-4 rounded-xl border",
+                isDark
+                  ? "bg-zinc-900/50 border-zinc-800"
+                  : "bg-white border-gray-200 shadow-sm"
+              )}
+            >
               <Clock className="w-5 h-5 text-purple-500 mb-2" />
               <p className="text-2xl font-bold">2.5h</p>
-              <p className="text-sm text-zinc-400">Streamed today</p>
+              <p
+                className={
+                  isDark ? "text-sm text-zinc-400" : "text-sm text-gray-500"
+                }
+              >
+                Streamed today
+              </p>
             </div>
-            <div className="p-4 bg-zinc-900/50 border border-zinc-800 rounded-xl">
+            <div
+              className={cn(
+                "p-4 rounded-xl border",
+                isDark
+                  ? "bg-zinc-900/50 border-zinc-800"
+                  : "bg-white border-gray-200 shadow-sm"
+              )}
+            >
               <Play className="w-5 h-5 text-orange-500 mb-2" />
               <p className="text-2xl font-bold">128</p>
-              <p className="text-sm text-zinc-400">Plays this week</p>
+              <p
+                className={
+                  isDark ? "text-sm text-zinc-400" : "text-sm text-gray-500"
+                }
+              >
+                Plays this week
+              </p>
             </div>
           </motion.section>
 
@@ -331,7 +443,12 @@ export default function DashboardPage() {
               <h2 className="text-xl font-semibold">Your Library</h2>
               <Link
                 href="/player"
-                className="flex items-center gap-1 text-sm text-zinc-400 hover:text-white transition-colors"
+                className={cn(
+                  "flex items-center gap-1 text-sm transition-colors",
+                  isDark
+                    ? "text-zinc-400 hover:text-white"
+                    : "text-gray-500 hover:text-gray-900"
+                )}
               >
                 View all
                 <ChevronRight className="w-4 h-4" />
@@ -351,9 +468,19 @@ export default function DashboardPage() {
                   >
                     <div
                       onClick={() => handleSongSelect(song, index)}
-                      className="group block p-3 bg-zinc-900/50 hover:bg-zinc-800/50 border border-zinc-800 rounded-xl transition-all cursor-pointer"
+                      className={cn(
+                        "group block p-3 rounded-xl border transition-all cursor-pointer",
+                        isDark
+                          ? "bg-zinc-900/50 hover:bg-zinc-800/50 border-zinc-800"
+                          : "bg-white hover:bg-gray-50 border-gray-200 shadow-sm"
+                      )}
                     >
-                      <div className="relative aspect-square mb-3 rounded-lg overflow-hidden bg-zinc-800">
+                      <div
+                        className={cn(
+                          "relative aspect-square mb-3 rounded-lg overflow-hidden",
+                          isDark ? "bg-zinc-800" : "bg-gray-100"
+                        )}
+                      >
                         {song.albumArt ? (
                           <img
                             src={song.albumArt}
@@ -362,7 +489,12 @@ export default function DashboardPage() {
                           />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center">
-                            <Disc3 className="w-12 h-12 text-zinc-600" />
+                            <Disc3
+                              className={cn(
+                                "w-12 h-12",
+                                isDark ? "text-zinc-600" : "text-gray-400"
+                              )}
+                            />
                           </div>
                         )}
                         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
@@ -371,10 +503,15 @@ export default function DashboardPage() {
                           </div>
                         </div>
                       </div>
-                      <h3 className="font-medium text-white truncate text-sm">
+                      <h3 className="font-medium truncate text-sm">
                         {song.title}
                       </h3>
-                      <p className="text-xs text-zinc-400 truncate">
+                      <p
+                        className={cn(
+                          "text-xs truncate",
+                          isDark ? "text-zinc-400" : "text-gray-500"
+                        )}
+                      >
                         {song.artist}
                       </p>
                     </div>
