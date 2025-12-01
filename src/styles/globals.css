@@ -1,0 +1,97 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
+
+@layer base {
+  * {
+    @apply box-border;
+  }
+
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply bg-zinc-950 text-white antialiased font-sans;
+  }
+
+  ::-webkit-scrollbar {
+    @apply w-2;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-zinc-900;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-zinc-600 rounded-full hover:bg-zinc-500;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center px-4 py-2 rounded-full font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-zinc-950 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-primary {
+    @apply btn bg-primary-500 text-zinc-950 hover:bg-primary-400 focus:ring-primary-500;
+  }
+
+  .btn-secondary {
+    @apply btn bg-zinc-800 text-white hover:bg-zinc-700 focus:ring-zinc-600;
+  }
+
+  .btn-ghost {
+    @apply btn bg-transparent text-white hover:bg-white/10 focus:ring-white/20;
+  }
+
+  .input {
+    @apply w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-lg text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200;
+  }
+
+  .card {
+    @apply bg-zinc-900 rounded-xl p-6 border border-zinc-800;
+  }
+
+  .glass {
+    @apply bg-zinc-900/80 backdrop-blur-xl border border-white/10;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary-400 to-primary-600;
+  }
+
+  .glow {
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+  }
+
+  .animate-pulse-slow {
+    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* Custom shimmer animation */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 1.5s infinite;
+}
