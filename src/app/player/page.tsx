@@ -209,7 +209,7 @@ export default function PlayerPage() {
           "min-h-screen pb-28 transition-colors duration-300",
           isDark
             ? "bg-gradient-to-b from-zinc-900 via-zinc-950 to-black text-white"
-            : "bg-gradient-to-b from-gray-50 via-white to-gray-100 text-zinc-900"
+            : "bg-gradient-to-b from-gray-100 via-gray-50 to-gray-100 text-zinc-900"
         )}
       >
         {/* Header */}
@@ -218,7 +218,7 @@ export default function PlayerPage() {
             "sticky top-0 z-40 backdrop-blur-xl border-b",
             isDark
               ? "bg-zinc-900/80 border-zinc-800/50"
-              : "bg-white/80 border-gray-200"
+              : "bg-gray-50/90 border-gray-200"
           )}
         >
           <div className="max-w-7xl mx-auto px-4 py-4">

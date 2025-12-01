@@ -154,7 +154,7 @@ export default function DashboardPage() {
           "min-h-screen transition-colors duration-300",
           isDark
             ? "bg-gradient-to-b from-zinc-900 via-zinc-950 to-black text-white"
-            : "bg-gradient-to-b from-gray-50 via-white to-gray-100 text-zinc-900"
+            : "bg-gradient-to-b from-gray-100 via-gray-50 to-gray-100 text-zinc-900"
         )}
       >
         {/* Header */}
@@ -163,7 +163,7 @@ export default function DashboardPage() {
             "sticky top-0 z-40 backdrop-blur-xl border-b",
             isDark
               ? "bg-zinc-900/80 border-zinc-800/50"
-              : "bg-white/80 border-gray-200"
+              : "bg-gray-50/90 border-gray-200"
           )}
         >
           <div className="max-w-7xl mx-auto px-4 py-4">
@@ -251,7 +251,7 @@ export default function DashboardPage() {
                     : "bg-gradient-to-r from-primary-100 to-white border-primary-300"
                   : isDark
                   ? "bg-zinc-900/50 border-zinc-800"
-                  : "bg-white border-gray-200 shadow-sm"
+                  : "bg-gray-50 border-gray-200 shadow-sm"
               )}
             >
               <div className="flex items-center justify-between flex-wrap gap-4">
@@ -364,7 +364,7 @@ export default function DashboardPage() {
                 "p-4 rounded-xl border",
                 isDark
                   ? "bg-zinc-900/50 border-zinc-800"
-                  : "bg-white border-gray-200 shadow-sm"
+                  : "bg-gray-50 border-gray-200 shadow-sm"
               )}
             >
               <Music className="w-5 h-5 text-primary-500 mb-2" />
@@ -382,7 +382,7 @@ export default function DashboardPage() {
                 "p-4 rounded-xl border",
                 isDark
                   ? "bg-zinc-900/50 border-zinc-800"
-                  : "bg-white border-gray-200 shadow-sm"
+                  : "bg-gray-50 border-gray-200 shadow-sm"
               )}
             >
               <Smartphone className="w-5 h-5 text-blue-500 mb-2" />
@@ -400,7 +400,7 @@ export default function DashboardPage() {
                 "p-4 rounded-xl border",
                 isDark
                   ? "bg-zinc-900/50 border-zinc-800"
-                  : "bg-white border-gray-200 shadow-sm"
+                  : "bg-gray-50 border-gray-200 shadow-sm"
               )}
             >
               <Clock className="w-5 h-5 text-purple-500 mb-2" />
@@ -418,7 +418,7 @@ export default function DashboardPage() {
                 "p-4 rounded-xl border",
                 isDark
                   ? "bg-zinc-900/50 border-zinc-800"
-                  : "bg-white border-gray-200 shadow-sm"
+                  : "bg-gray-50 border-gray-200 shadow-sm"
               )}
             >
               <Play className="w-5 h-5 text-orange-500 mb-2" />
@@ -472,7 +472,7 @@ export default function DashboardPage() {
                         "group block p-3 rounded-xl border transition-all cursor-pointer",
                         isDark
                           ? "bg-zinc-900/50 hover:bg-zinc-800/50 border-zinc-800"
-                          : "bg-white hover:bg-gray-50 border-gray-200 shadow-sm"
+                          : "bg-gray-50 hover:bg-gray-100 border-gray-200 shadow-sm"
                       )}
                     >
                       <div

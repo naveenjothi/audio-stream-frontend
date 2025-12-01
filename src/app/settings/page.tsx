@@ -160,7 +160,7 @@ export default function SettingsPage() {
         "min-h-screen transition-colors duration-300",
         resolvedTheme === "dark"
           ? "bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950"
-          : "bg-gradient-to-br from-gray-50 via-white to-gray-100"
+          : "bg-gradient-to-br from-gray-100 via-gray-50 to-white"
       )}
     >
       {/* Header */}
@@ -169,7 +169,7 @@ export default function SettingsPage() {
           "sticky top-0 z-40 border-b backdrop-blur-xl",
           resolvedTheme === "dark"
             ? "bg-zinc-950/80 border-zinc-800"
-            : "bg-white/80 border-gray-200"
+            : "bg-gray-50/80 border-gray-200"
         )}
       >
         <div className="max-w-2xl mx-auto px-4 h-16 flex items-center gap-4">
@@ -204,7 +204,7 @@ export default function SettingsPage() {
             "rounded-2xl p-6 border",
             resolvedTheme === "dark"
               ? "bg-zinc-900/50 border-zinc-800"
-              : "bg-white border-gray-200 shadow-sm"
+              : "bg-gray-100/50 border-gray-200 shadow-sm"
           )}
         >
           <div className="flex items-center gap-4">
@@ -289,7 +289,7 @@ export default function SettingsPage() {
             "rounded-2xl p-6 border",
             resolvedTheme === "dark"
               ? "bg-zinc-900/50 border-zinc-800"
-              : "bg-white border-gray-200 shadow-sm"
+              : "bg-gray-100/50 border-gray-200 shadow-sm"
           )}
         >
           <div className="flex items-center gap-3 mb-6">
@@ -375,7 +375,7 @@ export default function SettingsPage() {
             "rounded-2xl p-6 border",
             resolvedTheme === "dark"
               ? "bg-zinc-900/50 border-zinc-800"
-              : "bg-white border-gray-200 shadow-sm"
+              : "bg-gray-100/50 border-gray-200 shadow-sm"
           )}
         >
           <div className="flex items-center gap-3 mb-6">
