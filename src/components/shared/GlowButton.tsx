@@ -1,6 +1,7 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
 import { Loader2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface GlowButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'ghost' | 'danger';
@@ -19,21 +20,26 @@ export const GlowButton = ({
   disabled,
   ...props
 }: GlowButtonProps) => {
+  // Map size to Shadcn Button size
+  const sizeMap = {
+    sm: 'sm',
+    md: 'default',
+    lg: 'lg',
+  } as const;
+
   return (
-    <button
+    <Button
       className={cn(
-        'relative inline-flex items-center justify-center font-semibold transition-all duration-300 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden group',
-        // Size variants
-        size === 'sm' && 'px-3 py-1.5 text-sm',
-        size === 'md' && 'px-6 py-3 text-base',
-        size === 'lg' && 'px-8 py-4 text-lg',
-        // Color variants
-        variant === 'primary' && 'bg-primary-500 text-zinc-950 hover:bg-primary-400 shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_35px_rgba(16,185,129,0.6)] border border-transparent',
-        variant === 'secondary' && 'bg-zinc-800/50 backdrop-blur-md border border-white/10 text-white hover:bg-zinc-700/50 hover:border-white/30 hover:shadow-[0_0_20px_rgba(255,255,255,0.1)]',
+        'relative overflow-hidden transition-all duration-300 rounded-full group',
+        // Custom variant styles that might not be in Shadcn's default theme
+        variant === 'primary' && 'bg-primary-500 text-zinc-950 hover:bg-primary-400 shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_35px_rgba(16,185,129,0.6)] border-transparent',
+        variant === 'secondary' && 'bg-zinc-800/50 backdrop-blur-md border-white/10 text-white hover:bg-zinc-700/50 hover:border-white/30 hover:shadow-[0_0_20px_rgba(255,255,255,0.1)]',
         variant === 'ghost' && 'bg-transparent text-zinc-400 hover:text-white hover:bg-white/5',
-        variant === 'danger' && 'bg-red-500/10 border border-red-500/50 text-red-500 hover:bg-red-500/20 hover:shadow-[0_0_20px_rgba(239,68,68,0.4)]',
+        variant === 'danger' && 'bg-red-500/10 border-red-500/50 text-red-500 hover:bg-red-500/20 hover:shadow-[0_0_20px_rgba(239,68,68,0.4)]',
         className
       )}
+      variant={variant === 'ghost' ? 'ghost' : 'default'} // Use 'default' for others and override with classNames
+      size={sizeMap[size]}
       disabled={isLoading || disabled}
       {...props}
     >
@@ -48,6 +54,6 @@ export const GlowButton = ({
       {variant === 'primary' && (
         <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent z-0" />
       )}
-    </button>
+    </Button>
   );
 };

@@ -1,5 +1,6 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
+import { Card, CardContent } from '@/components/ui/card';
 
 interface FuturisticCardProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
@@ -15,9 +16,9 @@ export const FuturisticCard = ({
   ...props
 }: FuturisticCardProps) => {
   return (
-    <div
+    <Card
       className={cn(
-        'relative overflow-hidden rounded-2xl transition-all duration-300',
+        'relative overflow-hidden transition-all duration-300 border-0', // border-0 to override default card border if needed, or let variants handle it
         // Variants
         variant === 'default' && 'bg-zinc-900/40 backdrop-blur-xl border border-white/5',
         variant === 'glass' && 'bg-[#0a0a0c]/60 backdrop-blur-2xl border-t border-white/10 shadow-2xl',
@@ -32,7 +33,7 @@ export const FuturisticCard = ({
       <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')] mix-blend-overlay"></div>
       
       {/* Content */}
-      <div className="relative z-10">
+      <div className="relative z-10 p-6">
         {children}
       </div>
       
@@ -40,6 +41,6 @@ export const FuturisticCard = ({
       {hoverEffect && (
         <div className="absolute -inset-1 bg-gradient-to-r from-primary-500/0 via-primary-500/10 to-primary-500/0 opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-500" />
       )}
-    </div>
+    </Card>
   );
 };

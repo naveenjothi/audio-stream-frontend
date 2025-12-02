@@ -5,6 +5,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Mail, Lock, AlertCircle, Eye, EyeOff, Loader2 } from "lucide-react";
 import { signInWithEmail, signInWithGoogle } from "@/lib/firebase";
 import { FuturisticCard, GlowButton } from "@/components/shared";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import clsx from "clsx";
 
 function LoginFormContent({ redirect }: { redirect: string }) {
@@ -81,21 +83,21 @@ function LoginFormContent({ redirect }: { redirect: string }) {
       {/* Login Form */}
       <form onSubmit={handleEmailLogin} className="space-y-6">
         <div className="space-y-2">
-          <label
+          <Label
             htmlFor="email"
-            className="block text-sm font-medium text-zinc-300 ml-1"
+            className="text-zinc-300 ml-1"
           >
             Email address
-          </label>
+          </Label>
           <div className="relative group">
-            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500 group-focus-within:text-primary-400 transition-colors duration-300" />
-            <input
+            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500 group-focus-within:text-primary-400 transition-colors duration-300 z-10" />
+            <Input
               id="email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
-              className="input pl-12"
+              className="pl-12 bg-zinc-900/50 border-white/10 focus-visible:ring-primary-500/50"
               required
               disabled={isLoading}
             />
@@ -103,28 +105,28 @@ function LoginFormContent({ redirect }: { redirect: string }) {
         </div>
 
         <div className="space-y-2">
-          <label
+          <Label
             htmlFor="password"
-            className="block text-sm font-medium text-zinc-300 ml-1"
+            className="text-zinc-300 ml-1"
           >
             Password
-          </label>
+          </Label>
           <div className="relative group">
-            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500 group-focus-within:text-primary-400 transition-colors duration-300" />
-            <input
+            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500 group-focus-within:text-primary-400 transition-colors duration-300 z-10" />
+            <Input
               id="password"
               type={showPassword ? "text" : "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              className="input pl-12 pr-12"
+              className="pl-12 pr-12 bg-zinc-900/50 border-white/10 focus-visible:ring-primary-500/50"
               required
               disabled={isLoading}
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 transition-colors p-1 rounded-full hover:bg-white/5"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 transition-colors p-1 rounded-full hover:bg-white/5 z-10"
               tabIndex={-1}
             >
               {showPassword ? (
