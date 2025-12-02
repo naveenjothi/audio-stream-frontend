@@ -1,5 +1,5 @@
 import { getIdToken } from "./firebase";
-import type { Song, Device, PairResponse, ApiResponse } from "@/types";
+import type { Song, Device, PairResponse, ApiResponse, User } from "@/types";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080/api";
@@ -16,11 +16,18 @@ async function fetchWithAuth<T>(
   }
 
   try {
+    const headers: Record<string, string> = {
+      Authorization: `Bearer ${token}`,
+    };
+
+    if (!(options.body instanceof FormData)) {
+      headers["Content-Type"] = "application/json";
+    }
+
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       ...options,
       headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        ...headers,
         ...options.headers,
       },
     });
@@ -33,8 +40,8 @@ async function fetchWithAuth<T>(
       };
     }
 
-    const data = await response.json();
-    return { data };
+    const result = await response.json();
+    return { data: result.data };
   } catch (error) {
     console.error("API Error:", error);
     return {
@@ -43,6 +50,36 @@ async function fetchWithAuth<T>(
     };
   }
 }
+
+export async function createUser(userData: {
+  email: string | null;
+  firebase_id: string;
+  first_name?: string;
+  last_name?: string;
+  mobile?: string;
+  user_name?: string;
+  photo_url?: string;
+}): Promise<ApiResponse<User>> {
+  const formData = new FormData();
+  if (userData.email) formData.append("email", userData.email);
+  formData.append("firebase_id", userData.firebase_id);
+  if (userData.first_name) formData.append("first_name", userData.first_name);
+  if (userData.last_name) formData.append("last_name", userData.last_name);
+  if (userData.mobile) formData.append("mobile", userData.mobile);
+  if (userData.user_name) formData.append("user_name", userData.user_name);
+
+  if (userData.photo_url) formData.append("photo_url", userData.photo_url);
+
+  return fetchWithAuth<User>("/users", {
+    method: "POST",
+    body: formData,
+  });
+}
+
+export async function getUserById(id: string): Promise<ApiResponse<User>> {
+  return fetchWithAuth<User>(`/users/${id}`);
+}
+
 
 // Songs API
 export async function getSongs(): Promise<ApiResponse<Song[]>> {

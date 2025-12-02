@@ -2,12 +2,13 @@
 
 import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Mail, Lock, AlertCircle, Eye, EyeOff, Loader2 } from "lucide-react";
-import { signInWithEmail, signInWithGoogle } from "@/lib/firebase";
-import { FuturisticCard, GlowButton } from "@/components/shared";
+import { Mail, Lock, AlertCircle, Eye, EyeOff } from "lucide-react";
+import { logOut, signInWithEmail, signInWithGoogle } from "@/lib/firebase";
+import { createUser, getUserById } from "@/lib/api";
+import { FuturisticCard, GlowButton, useToast } from "@/components/shared";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import clsx from "clsx";
+import {  User } from "firebase/auth";
 
 function LoginFormContent({ redirect }: { redirect: string }) {
   const [email, setEmail] = useState("");
@@ -15,6 +16,7 @@ function LoginFormContent({ redirect }: { redirect: string }) {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { addToast } = useToast();
 
   const router = useRouter();
 
@@ -32,24 +34,59 @@ function LoginFormContent({ redirect }: { redirect: string }) {
     }
 
     if (user) {
-      router.push(redirect);
+      const success = await createDbUserIfNotExists(user);
+      if (success) {
+        addToast("Signed In successfully", "success");
+        router.push(redirect);
+      } else {
+        setIsLoading(false);
+      }
+    }
+  };
+
+  const createDbUserIfNotExists = async (user: User): Promise<boolean> => {
+    try {
+      const dbUser = await getUserById(user.uid);
+      if (!dbUser.data) {
+        const nameParts = user.displayName?.split(" ") || [];
+        const firstName = nameParts[0] || "";
+        const lastName = nameParts.slice(1).join(" ") || "";
+  
+        await createUser({
+          email: user.email,
+          firebase_id: user.uid,
+          first_name: firstName,
+          last_name: lastName,
+          mobile: user.phoneNumber || undefined,
+          photo_url: user.photoURL || undefined,
+        });
+      }
+      return true;
+    } catch (error) {
+      console.error("Error creating user:", error);
+      addToast("Error creating user", "error");
+      await logOut();
+      return false;
     }
   };
 
   const handleGoogleLogin = async () => {
     setError(null);
     setIsLoading(true);
-
     const { user, error: authError } = await signInWithGoogle();
-
     if (authError) {
       setError(getErrorMessage(authError.message));
       setIsLoading(false);
       return;
     }
-
     if (user) {
-      router.push(redirect);
+      const success = await createDbUserIfNotExists(user);
+      if (success) {
+        addToast("Signed In successfully", "success");
+        router.push(redirect);
+      } else {
+        setIsLoading(false);
+      }
     }
   };
 

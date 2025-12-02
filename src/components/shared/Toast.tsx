@@ -22,9 +22,9 @@ export function useToast() {
     // We can use 'className' to style based on type if we want to keep colors.
     
     let className = "";
-    if (type === "success") className = "bg-green-500/10 border-green-500/20 text-white";
-    if (type === "warning") className = "bg-yellow-500/10 border-yellow-500/20 text-white";
-    if (type === "info") className = "bg-blue-500/10 border-blue-500/20 text-white";
+    if (type === "success") className = "bg-green-500/10 border-green-500/20 text-green-900 dark:text-green-100";
+    if (type === "warning") className = "bg-yellow-500/10 border-yellow-500/20 text-yellow-900 dark:text-yellow-100";
+    if (type === "info") className = "bg-blue-500/10 border-blue-500/20 text-blue-900 dark:text-blue-100";
     
     toast({
       description: message,
