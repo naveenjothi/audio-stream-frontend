@@ -16,12 +16,22 @@ import {
   Clock,
   Disc3,
   User,
+  Heart,
+  Database,
 } from "lucide-react";
 import { AuthGuard, useAuth } from "@/components/auth";
 import { SongList } from "@/components/songs";
 import { Loading, useToast } from "@/components/shared";
 import { useDeviceStore, usePlayerStore, useThemeStore } from "@/store";
-import { getSongs, getPairedDevice } from "@/services/api";
+import {
+  getSongs,
+  getPairedDevice,
+  getDashboardStats,
+  getFavorites,
+  likeSong,
+  unlikeSong,
+  recordHistory,
+} from "@/services/api";
 import type { Song as ApiSong } from "@/types/api";
 import { logOut } from "@/lib/firebase";
 import { cn } from "@/lib/utils";
@@ -87,6 +97,8 @@ export default function DashboardPage() {
   const [songs, setSongs] = useState<Song[]>([]);
   const [isLoadingSongs, setIsLoadingSongs] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [stats, setStats] = useState<any>(null);
+  const [favorites, setFavorites] = useState<Song[]>([]);
 
   const router = useRouter();
   const { user } = useAuth();
@@ -106,6 +118,26 @@ export default function DashboardPage() {
 
   const fetchData = async () => {
     try {
+      // Fetch stats
+      const dashboardStats = await getDashboardStats();
+      if (dashboardStats) {
+        setStats(dashboardStats);
+      }
+
+      // Fetch favorites
+      const favSongs = await getFavorites();
+      if (favSongs) {
+        setFavorites(favSongs.map(s => ({
+          id: s.id || "",
+          title: s.name,
+          artist: s.artists?.[0]?.name || "Unknown Artist",
+          album: undefined,
+          duration: (s.duration || 0) * 1000,
+          albumArt: s.image,
+          filePath: s.url || "",
+        })));
+      }
+
       // Fetch paired device
       const device = await getPairedDevice();
       if (device) {
@@ -120,13 +152,13 @@ export default function DashboardPage() {
         const mappedSongs: Song[] = apiSongs.map((s: ApiSong) => ({
           id: s.id,
           title: s.name,
-          artist: "Unknown Artist", // TODO: fetch artist
+          artist: s.artists?.[0]?.name || "Unknown Artist",
           album: undefined,
           duration: s.duration * 1000, // convert to ms if needed
           albumArt: s.image,
           filePath: s.url,
         }));
-        setSongs([...mappedSongs, ...demoSongs]);
+        setSongs([...mappedSongs]);
       } else {
         setSongs(demoSongs);
       }
@@ -148,7 +180,32 @@ export default function DashboardPage() {
   const handleSongSelect = async (song: Song, index: number) => {
     setQueue(songs, index);
     setIsPlaying(true);
+    
+    // Record history (async, don't block navigation)
+    if (song.id) {
+        recordHistory({
+            song_id: song.id,
+            duration_played_ms: 0, // Should be updated during playback
+            is_completed: false
+        }).catch(err => console.error("Failed to record history:", err));
+    }
+
     router.push("/player");
+  };
+
+  const handleLikeSong = async (songId: string, isLiked: boolean) => {
+    try {
+      if (isLiked) {
+        await unlikeSong(songId);
+        addToast("Removed from favorites", "info");
+      } else {
+        await likeSong(songId);
+        addToast("Added to favorites", "success");
+      }
+      fetchData(); // Refresh to update list and stats
+    } catch (error) {
+      addToast("Failed to update favorite", "error");
+    }
   };
 
   const handleLogout = async () => {
@@ -224,14 +281,14 @@ export default function DashboardPage() {
           </motion.div>
 
           {/* Bento Grid Layout */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
             
             {/* Device Status - Large Card (2 columns on Desktop) */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="md:col-span-2 p-8 rounded-tps bg-tps-surface border border-white/5 relative overflow-hidden group"
+              className="lg:col-span-2 p-8 rounded-tps bg-tps-surface border border-white/5 relative overflow-hidden group"
             >
                 {/* Background Decor */}
                 <div className={cn(
@@ -292,13 +349,13 @@ export default function DashboardPage() {
               </div>
             </motion.div>
 
-            {/* Quick Stats - Small High-Density Cards */}
-            <div className="grid grid-cols-2 gap-4">
+            {/* Quick Stats */}
+            <div className="grid grid-cols-2 gap-4 lg:col-span-1">
                  {[
-                    { icon: Music, label: "Songs", value: songs.length, color: "text-tps-cyan" },
-                    { icon: Play, label: "Plays", value: "128", color: "text-tps-lilac" },
-                    { icon: Clock, label: "Hours", value: "2.5h", color: "text-emerald-400" },
-                    { icon: Smartphone, label: "Devices", value: pairedDevice ? 1 : 0, color: "text-orange-400" },
+                    { icon: Music, label: "Songs", value: stats?.total_songs || songs.length, color: "text-tps-cyan" },
+                    { icon: Play, label: "Plays", value: stats?.total_plays || 0, color: "text-tps-lilac" },
+                    { icon: Clock, label: "Hours", value: stats?.total_hours ? `${stats.total_hours.toFixed(1)}h` : "0h", color: "text-emerald-400" },
+                    { icon: Database, label: "Cloud Impact", value: stats?.storage_saved_mb ? `${(stats.storage_saved_mb / 1024).toFixed(1)}GB` : "0GB", color: "text-orange-400" },
                  ].map((stat, i) => (
                     <motion.div
                         key={stat.label}
@@ -315,16 +372,75 @@ export default function DashboardPage() {
                     </motion.div>
                  ))}
             </div>
+
+            {/* Top Artists */}
+            <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.3 }}
+                className="p-6 rounded-tps bg-tps-surface border border-white/5 lg:col-span-1"
+            >
+                <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
+                    <User className="w-5 h-5 text-tps-lilac" />
+                    Top Artists
+                </h3>
+                <div className="space-y-4">
+                    {stats?.top_artists?.length > 0 ? (
+                        stats.top_artists.map((artist: any, i: number) => (
+                            <div key={artist.artist_id} className="flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-xs font-bold text-tps-muted">
+                                        {i + 1}
+                                    </div>
+                                    <span className="text-sm font-medium truncate max-w-[100px]">{artist.name}</span>
+                                </div>
+                                <span className="text-xs text-tps-muted font-mono">{artist.play_count} plays</span>
+                            </div>
+                        ))
+                    ) : (
+                        <p className="text-sm text-tps-muted italic text-center py-4">Start listening to see stats</p>
+                    )}
+                </div>
+            </motion.div>
           </div>
 
-          {/* Recent songs */}
+          {/* Favorites */}
+          {favorites.length > 0 && (
+            <motion.section
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className="mb-12"
+            >
+                <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-xl font-bold tracking-tight flex items-center gap-2">
+                        <Heart className="w-5 h-5 text-red-400 fill-red-400" />
+                        Your Favorites
+                    </h2>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                    {favorites.map((song, index) => (
+                        <SongCard 
+                            key={`fav-${song.id}`} 
+                            song={song} 
+                            index={index} 
+                            isLiked={true}
+                            onSelect={() => handleSongSelect(song, songs.findIndex(s => s.id === song.id))}
+                            onLike={() => handleLikeSong(song.id, true)}
+                        />
+                    ))}
+                </div>
+            </motion.section>
+          )}
+
+          {/* Recently Added */}
           <motion.section
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
+            transition={{ delay: 0.5 }}
           >
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold tracking-tight">Recently Added</h2>
+              <h2 className="text-xl font-bold tracking-tight">Recently Synced</h2>
               <Link
                 href="/player"
                 className="flex items-center gap-1 text-sm text-tps-cyan hover:text-tps-lilac transition-colors font-medium"
@@ -338,46 +454,29 @@ export default function DashboardPage() {
               <Loading text="Loading your library..." />
             ) : (
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
-                {songs.slice(0, 6).map((song, index) => (
-                  <motion.div
-                    key={song.id}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.1 * index }}
-                  >
-                    <div
-                      onClick={() => handleSongSelect(song, index)}
-                      className="group block p-3 rounded-2xl bg-transparent hover:bg-tps-surface transition-all cursor-pointer"
-                    >
-                      <div className="relative aspect-square mb-4 rounded-xl overflow-hidden bg-tps-surface shadow-md group-hover:shadow-tps-cyan/10 transition-shadow">
-                        {song.albumArt ? (
-                          <img
-                            src={song.albumArt}
-                            alt={song.title}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-tps-surface to-black border border-white/5">
-                            <Disc3 className="w-10 h-10 text-tps-muted" />
-                          </div>
-                        )}
-                        
-                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300 backdrop-blur-[2px]">
-                          <div className="w-12 h-12 rounded-full bg-tps-cyan flex items-center justify-center shadow-lg transform scale-90 group-hover:scale-100 transition-transform">
-                            <Play className="w-5 h-5 text-black fill-current ml-0.5" />
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <h3 className="font-bold text-white truncate text-sm mb-1 group-hover:text-tps-cyan transition-colors">
-                        {song.title}
-                      </h3>
-                      <p className="text-xs text-tps-muted truncate">
-                        {song.artist}
-                      </p>
-                    </div>
-                  </motion.div>
-                ))}
+                {(stats?.recently_added?.length > 0 ? stats.recently_added : songs.slice(0, 6)).map((apiSong: any, index: number) => {
+                  const song = stats?.recently_added?.length > 0 ? {
+                    id: apiSong.id,
+                    title: apiSong.name,
+                    artist: apiSong.artists?.[0]?.name || "Unknown Artist",
+                    album: undefined,
+                    duration: apiSong.duration * 1000,
+                    albumArt: apiSong.image,
+                    filePath: apiSong.url,
+                  } : apiSong;
+                  
+                  return (
+                    <SongCard 
+                      key={song.id} 
+                      song={song} 
+                      index={index} 
+                      isLiked={favorites.some(f => f.id === song.id)}
+                      onSelect={() => handleSongSelect(song, index)}
+                      onLike={() => handleLikeSong(song.id, favorites.some(f => f.id === song.id))}
+                      showSyncedBadge={stats?.recently_added?.length > 0}
+                    />
+                  );
+                })}
               </div>
             )}
           </motion.section>
@@ -385,4 +484,70 @@ export default function DashboardPage() {
       </div>
     </AuthGuard>
   );
+}
+
+// Sub-component for Song Card
+function SongCard({ song, index, isLiked, onSelect, onLike, showSyncedBadge }: any) {
+    return (
+        <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.1 * index }}
+        >
+            <div className="group block p-3 rounded-2xl bg-transparent hover:bg-tps-surface transition-all cursor-pointer relative">
+                <div 
+                    onClick={onSelect}
+                    className="relative aspect-square mb-4 rounded-xl overflow-hidden bg-tps-surface shadow-md group-hover:shadow-tps-cyan/10 transition-shadow"
+                >
+                    {song.albumArt ? (
+                        <img
+                            src={song.albumArt}
+                            alt={song.title}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                    ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-tps-surface to-black border border-white/5">
+                            <Disc3 className="w-10 h-10 text-tps-muted" />
+                        </div>
+                    )}
+                    
+                    {showSyncedBadge && (
+                        <div className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-tps-cyan/90 text-[10px] font-bold text-black backdrop-blur-sm z-20 flex items-center gap-1 shadow-lg border border-white/10">
+                            <Wifi className="w-2.5 h-2.5" />
+                            SYNCED
+                        </div>
+                    )}
+
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300 backdrop-blur-[2px]">
+                        <div className="w-12 h-12 rounded-full bg-tps-cyan flex items-center justify-center shadow-lg transform scale-90 group-hover:scale-100 transition-transform">
+                            <Play className="w-5 h-5 text-black fill-current ml-0.5" />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="flex items-start justify-between gap-1">
+                    <div className="flex-1 overflow-hidden">
+                        <h3 className="font-bold text-white truncate text-sm mb-1 group-hover:text-tps-cyan transition-colors">
+                            {song.title}
+                        </h3>
+                        <p className="text-xs text-tps-muted truncate">
+                            {song.artist}
+                        </p>
+                    </div>
+                    <button 
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onLike();
+                        }}
+                        className={cn(
+                            "p-1.5 rounded-full hover:bg-white/10 transition-colors",
+                            isLiked ? "text-red-400" : "text-tps-muted"
+                        )}
+                    >
+                        <Heart className={cn("w-4 h-4", isLiked && "fill-current")} />
+                    </button>
+                </div>
+            </div>
+        </motion.div>
+    );
 }

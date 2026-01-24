@@ -25,6 +25,7 @@ export interface Song {
   device_id: string; // Required: identifies source device
   artist_id?: string;
   album_id?: string;
+  artists?: Artist[];
   created_at?: string;
   updated_at?: string;
 }
@@ -158,4 +159,22 @@ export interface UpdateUserRequest {
   user_name?: string;
   photo_url?: string;
   preferences?: UserPreferences;
+}
+
+// ============== Dashboard & Stats ==============
+
+export interface ArtistStat {
+  name: string;
+  play_count: number;
+  artist_id: string;
+}
+
+export interface DashboardStats {
+  total_plays: number;
+  total_hours: number;
+  total_songs: number;
+  storage_saved_mb: number;
+  top_artists: ArtistStat[];
+  recent_plays: Song[];
+  recently_added: Song[];
 }
