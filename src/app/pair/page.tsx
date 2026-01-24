@@ -142,7 +142,7 @@ export default function PairPage() {
 
   return (
     <AuthGuard>
-      <div className="min-h-screen bg-tps-charcoal text-white relative flex flex-col justify-center items-center overflow-hidden">
+      <div className="min-h-screen bg-tps-charcoal text-white relative flex flex-col overflow-hidden">
         {/* Background effects */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-tps-cyan/5 rounded-full blur-[120px]" />
@@ -150,20 +150,20 @@ export default function PairPage() {
         </div>
 
         {/* Header */}
-        <header className="absolute top-0 left-0 p-6 z-20 w-full">
+        <header className="w-full p-6 z-20 flex-shrink-0">
           <Link
             href="/dashboard"
             className="inline-flex items-center gap-2 text-tps-muted hover:text-white transition-colors group"
           >
             <div className="p-2 rounded-full group-hover:bg-white/5 transition-colors">
-                <ArrowLeft className="w-5 h-5" />
+              <ArrowLeft className="w-5 h-5" />
             </div>
             <span className="font-medium">Back to Dashboard</span>
           </Link>
         </header>
 
         {/* Main content */}
-        <main className="relative z-10 w-full max-w-lg px-6">
+        <main className="relative z-10 w-full max-w-md px-6 mx-auto flex-grow flex flex-col justify-center pb-12">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -214,7 +214,7 @@ export default function PairPage() {
             </div>
 
             {/* Pairing card */}
-            <div className="bg-tps-surface backdrop-blur-xl border border-white/5 rounded-tps p-8 shadow-2xl relative overflow-hidden group">
+            <div className="bg-tps-surface backdrop-blur-xl border border-white/5 rounded-tps p-6 sm:p-8 shadow-2xl relative overflow-hidden group">
                {/* Subtle border gradient on hover */}
                <div className="absolute inset-0 rounded-tps border border-white/0 group-hover:border-tps-cyan/20 transition-colors pointer-events-none" />
 
@@ -262,7 +262,7 @@ export default function PairPage() {
                     exit={{ opacity: 0 }}
                   >
                     {/* Code input */}
-                    <div className="flex justify-center gap-3 mb-10">
+                    <div className="flex justify-center gap-2 sm:gap-3 mb-8 sm:mb-10 scale-90 sm:scale-100 origin-center transition-transform">
                       {pairCode.map((digit, index) => (
                         <motion.div
                           key={index}
@@ -285,7 +285,7 @@ export default function PairPage() {
                             onPaste={handlePaste}
                             disabled={status === "verifying"}
                             className={cn(
-                              "w-12 h-16 sm:w-14 sm:h-20 text-center text-3xl font-bold rounded-xl outline-none transition-all duration-300",
+                              "w-10 h-14 sm:w-14 sm:h-20 text-center text-2xl sm:text-3xl font-bold rounded-xl outline-none transition-all duration-300",
                               "bg-tps-charcoal/50 border border-white/10 shadow-inner text-white",
                               status === "error"
                                 ? "border-red-500/50 text-red-400 focus:ring-2 focus:ring-red-500/30"
