@@ -4,7 +4,7 @@ import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Mail, Lock, AlertCircle, Eye, EyeOff } from "lucide-react";
 import { logOut, signInWithEmail, signInWithGoogle } from "@/lib/firebase";
-import { createUser, getUserById } from "@/lib/api";
+import { createUser, getUserByFirebaseId } from "@/services/api/catalog";
 import { FuturisticCard, GlowButton, useToast } from "@/components/shared";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -46,19 +46,19 @@ function LoginFormContent({ redirect }: { redirect: string }) {
 
   const createDbUserIfNotExists = async (user: User): Promise<boolean> => {
     try {
-      const dbUser = await getUserById(user.uid);
-      if (!dbUser.data) {
+      const dbUser = await getUserByFirebaseId(user.uid);
+      if (!dbUser) {
         const nameParts = user.displayName?.split(" ") || [];
         const firstName = nameParts[0] || "";
         const lastName = nameParts.slice(1).join(" ") || "";
   
         await createUser({
-          email: user.email,
+          email: user.email ?? undefined,
           firebase_id: user.uid,
           first_name: firstName,
           last_name: lastName,
-          mobile: user.phoneNumber || undefined,
-          photo_url: user.photoURL || undefined,
+          mobile: user.phoneNumber ?? undefined,
+          photo_url: user.photoURL ?? undefined,
         });
       }
       return true;

@@ -12,7 +12,7 @@ import {
   setPlaybackVolume,
   nextTrack as apiNextTrack,
   previousTrack as apiPreviousTrack,
-} from "@/lib/api";
+} from "@/services/api";
 import { createPlaybackClient, WebSocketClient } from "@/lib/ws";
 import type { PlaybackEvent } from "@/types";
 import clsx from "clsx";

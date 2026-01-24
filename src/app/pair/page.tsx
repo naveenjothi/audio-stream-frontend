@@ -18,8 +18,8 @@ import {
 } from "lucide-react";
 import { AuthGuard } from "@/components/auth";
 import { useToast } from "@/components/shared";
-import { useDeviceStore } from "@/store";
-import { verifyPairCode } from "@/lib/api";
+import { useDeviceStore, useAuthStore } from "@/store";
+import { connectWithPairCode, registerDevice } from "@/services/api/signaling";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -87,29 +87,36 @@ export default function PairPage() {
     setIsPairing(true);
 
     try {
-      const { data, error } = await verifyPairCode(code);
+      // First register this browser as a device
+      const browserDevice = await registerDevice({
+        device_name: navigator.userAgent.substring(0, 50),
+        device_type: "browser",
+        is_source: false,
+      });
 
-      if (error || !data?.success) {
-        setStatus("error");
-        setErrorMessage(error || "Invalid pairing code");
-        setPairingError(error || "Invalid pairing code");
-        return;
-      }
+      // Then connect using the pair code
+      const pairing = await connectWithPairCode(browserDevice.id, code);
 
-      setStatus("success");
-      if (data.device) {
-        setPairedDevice(data.device);
+      if (pairing.status === "paired") {
+        setStatus("success");
         setConnectionStatus("connected");
-      }
-      addToast("Device paired successfully!", "success");
+        addToast("Device paired successfully!", "success");
 
-      // Redirect to dashboard after delay
-      setTimeout(() => {
-        router.push("/dashboard");
-      }, 2000);
+        // Redirect to dashboard after delay
+        setTimeout(() => {
+          router.push("/dashboard");
+        }, 2000);
+      } else {
+        setStatus("error");
+        setErrorMessage("Pairing failed - invalid or expired code");
+        setPairingError("Pairing failed");
+      }
     } catch (err) {
       setStatus("error");
       setErrorMessage("Failed to verify code");
+      setPairingError("Failed to verify code");
+    } finally {
+      setIsPairing(false);
     }
   };
 

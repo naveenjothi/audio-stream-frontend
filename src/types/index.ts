@@ -25,6 +25,16 @@ export interface Device {
   lastSeen?: Date;
 }
 
+export interface Playlist {
+  id: string;
+  name: string;
+  description?: string;
+  userId: string;
+  songs?: Song[];
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 export interface PlaybackState {
   isPlaying: boolean;
   currentSong: Song | null;

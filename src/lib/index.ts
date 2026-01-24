@@ -7,18 +7,6 @@ export {
   auth,
 } from "./firebase";
 export {
-  getSongs,
-  getSongById,
-  verifyPairCode,
-  getPairedDevice,
-  playSong,
-  pausePlayback,
-  seekPlayback,
-  setPlaybackVolume,
-  nextTrack,
-  previousTrack,
-} from "./api";
-export {
   WebSocketClient,
   createSignalingClient,
   createPlaybackClient,

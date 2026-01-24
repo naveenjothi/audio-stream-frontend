@@ -1,7 +1,7 @@
 "use client";
 
 import { Smartphone, Wifi, WifiOff, Loader2 } from "lucide-react";
-import type { Device } from "@/types";
+import type { Device } from "@/types/api";
 import clsx from "clsx";
 
 interface DeviceStatusProps {
@@ -85,7 +85,7 @@ export function DeviceStatus({
       <div className="flex items-center gap-2">
         {getStatusIcon()}
         <span className={clsx("text-sm font-medium", getStatusColor())}>
-          {device.name}
+          {device.device_name}
         </span>
       </div>
     );
@@ -97,7 +97,7 @@ export function DeviceStatus({
         <Smartphone className="w-6 h-6 text-dark-300" />
       </div>
       <div className="flex-1">
-        <p className="font-semibold text-white">{device.name}</p>
+        <p className="font-semibold text-white">{device.device_name}</p>
         <div className="flex items-center gap-2 mt-1">
           {getStatusIcon()}
           <span className={clsx("text-sm", getStatusColor())}>

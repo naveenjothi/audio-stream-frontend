@@ -21,11 +21,22 @@ import { AuthGuard, useAuth } from "@/components/auth";
 import { SongList } from "@/components/songs";
 import { Loading, useToast } from "@/components/shared";
 import { useDeviceStore, usePlayerStore, useThemeStore } from "@/store";
-import { getSongs, getPairedDevice, playSong } from "@/lib/api";
+import { getSongs, getPairedDevice } from "@/services/api";
+import type { Song as ApiSong } from "@/types/api";
 import { logOut } from "@/lib/firebase";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
-import type { Song } from "@/types";
+
+// Local Song type for UI (maps from API)
+interface Song {
+  id: string;
+  title: string;
+  artist: string;
+  album?: string;
+  duration: number;
+  albumArt?: string;
+  filePath: string;
+}
 
 // Demo songs
 const demoSongs: Song[] = [
@@ -95,18 +106,26 @@ export default function DashboardPage() {
   const fetchData = async () => {
     try {
       // Fetch paired device
-      const deviceResponse = await getPairedDevice();
-      if (deviceResponse.data) {
-        setPairedDevice(deviceResponse.data);
-        setConnectionStatus(
-          deviceResponse.data.status === "online" ? "connected" : "disconnected"
-        );
+      const device = await getPairedDevice();
+      if (device) {
+        setPairedDevice(device);
+        setConnectionStatus("connected");
       }
 
-      // Fetch songs
-      const songsResponse = await getSongs();
-      if (songsResponse.data) {
-        setSongs([...songsResponse.data, ...demoSongs]);
+      // Fetch songs from new API
+      const apiSongs = await getSongs();
+      if (apiSongs && apiSongs.length > 0) {
+        // Map API songs to UI Song format
+        const mappedSongs: Song[] = apiSongs.map((s: ApiSong) => ({
+          id: s.id,
+          title: s.name,
+          artist: "Unknown Artist", // TODO: fetch artist
+          album: undefined,
+          duration: s.duration * 1000, // convert to ms if needed
+          albumArt: s.image,
+          filePath: s.url,
+        }));
+        setSongs([...mappedSongs, ...demoSongs]);
       } else {
         setSongs(demoSongs);
       }
@@ -307,7 +326,7 @@ export default function DashboardPage() {
                     </div>
                     <h3 className="text-lg font-semibold">
                       {connectedDevice
-                        ? pairedDevice.name
+                        ? pairedDevice.device_name
                         : "Connect your phone"}
                     </h3>
                     <p

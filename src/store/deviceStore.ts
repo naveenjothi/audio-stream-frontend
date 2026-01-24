@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { Device } from "@/types";
+import type { Device } from "@/types/api";
 
 interface DeviceState {
   pairedDevice: Device | null;
@@ -13,7 +13,6 @@ interface DeviceState {
   setConnectionStatus: (
     status: "disconnected" | "connecting" | "connected"
   ) => void;
-  updateDeviceStatus: (status: Device["status"]) => void;
   clearDevice: () => void;
 }
 
@@ -33,14 +32,6 @@ export const useDeviceStore = create<DeviceState>()(
       setPairingError: (error) =>
         set({ pairingError: error, isPairing: false }),
       setConnectionStatus: (status) => set({ connectionStatus: status }),
-      updateDeviceStatus: (status) => {
-        const device = get().pairedDevice;
-        if (device) {
-          set({
-            pairedDevice: { ...device, status },
-          });
-        }
-      },
       clearDevice: () =>
         set({
           pairedDevice: null,
