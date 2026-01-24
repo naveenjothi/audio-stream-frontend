@@ -204,65 +204,34 @@ export default function PlayerPage() {
 
   return (
     <AuthGuard>
-      <div
-        className={cn(
-          "min-h-screen pb-28 transition-colors duration-300",
-          isDark
-            ? "bg-gradient-to-b from-zinc-900 via-zinc-950 to-black text-white"
-            : "bg-gradient-to-b from-gray-100 via-gray-50 to-gray-100 text-zinc-900"
-        )}
-      >
+      <div className="min-h-screen pb-28 transition-colors duration-300 bg-tps-charcoal text-white">
         {/* Header */}
-        <header
-          className={cn(
-            "sticky top-0 z-40 backdrop-blur-xl border-b",
-            isDark
-              ? "bg-zinc-900/80 border-zinc-800/50"
-              : "bg-gray-50/90 border-gray-200"
-          )}
-        >
+        <header className="sticky top-0 z-40 backdrop-blur-xl border-b border-white/5 bg-tps-charcoal/80">
           <div className="max-w-7xl mx-auto px-4 py-4">
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-3">
                 <Link
                   href="/dashboard"
-                  className={cn(
-                    "p-2 -ml-2 transition-colors",
-                    isDark
-                      ? "text-zinc-400 hover:text-white"
-                      : "text-gray-500 hover:text-gray-900"
-                  )}
+                  className="p-2 -ml-2 transition-colors text-tps-muted hover:text-white group"
                 >
-                  <ChevronLeft className="w-5 h-5" />
+                  <ChevronLeft className="w-5 h-5 group-hover:-translate-x-0.5 transition-transform" />
                 </Link>
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-tps-cyan to-tps-lilac flex items-center justify-center shadow-lg shadow-tps-cyan/20">
                   <Disc3 className="w-6 h-6 text-white" />
                 </div>
-                <h1 className="text-xl font-bold hidden sm:block">
-                  SoundStream
-                </h1>
+                <h1 className="text-xl font-bold hidden sm:block tracking-tight">TPS</h1>
               </div>
 
               {/* Search bar */}
               <div className="flex-1 max-w-md">
                 <div className="relative">
-                  <Search
-                    className={cn(
-                      "absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4",
-                      isDark ? "text-zinc-400" : "text-gray-400"
-                    )}
-                  />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-tps-muted" />
                   <input
                     type="text"
                     placeholder="Search songs, artists..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className={cn(
-                      "w-full pl-10 pr-4 py-2.5 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/50 transition-all",
-                      isDark
-                        ? "bg-zinc-800/50 border border-zinc-700/50 text-white placeholder-zinc-500 focus:border-primary-500/50"
-                        : "bg-gray-100 border border-gray-200 text-gray-900 placeholder-gray-400 focus:border-primary-500/50"
-                    )}
+                    className="w-full pl-10 pr-4 py-2.5 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-tps-cyan/50 transition-all bg-tps-surface border border-white/5 text-white placeholder-tps-muted focus:border-tps-cyan/50"
                   />
                 </div>
               </div>
@@ -278,12 +247,7 @@ export default function PlayerPage() {
                 </div>
                 <Link href="/settings">
                   <button
-                    className={cn(
-                      "p-2 transition-colors",
-                      isDark
-                        ? "text-zinc-400 hover:text-white"
-                        : "text-gray-500 hover:text-gray-900"
-                    )}
+                    className="p-2 transition-colors text-tps-muted hover:text-white rounded-full hover:bg-white/5"
                     title="Settings"
                   >
                     <Settings className="w-5 h-5" />
@@ -301,16 +265,13 @@ export default function PlayerPage() {
             <motion.section
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className={cn(
-                "mb-8 p-6 rounded-2xl border cursor-pointer",
-                isDark
-                  ? "bg-gradient-to-r from-primary-900/30 via-zinc-800/50 to-zinc-800/30 border-zinc-700/30"
-                  : "bg-gradient-to-r from-primary-100 via-white to-gray-50 border-gray-200"
-              )}
+              className="mb-8 p-6 rounded-tps border border-white/5 cursor-pointer bg-gradient-to-r from-tps-surface to-tps-charcoal relative overflow-hidden group shadow-2xl"
               onClick={() => setIsFullscreenOpen(true)}
             >
-              <div className="flex items-center gap-6">
-                <div className="relative w-24 h-24 md:w-32 md:h-32 rounded-xl overflow-hidden shadow-2xl shadow-black/50 flex-shrink-0">
+               <div className="absolute inset-0 bg-gradient-to-r from-tps-cyan/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+               
+              <div className="relative z-10 flex items-center gap-6">
+                <div className="relative w-24 h-24 md:w-32 md:h-32 rounded-2xl overflow-hidden shadow-md flex-shrink-0 border border-white/5 group-hover:scale-105 transition-transform duration-500">
                   {currentTrack.albumArt ? (
                     <img
                       src={currentTrack.albumArt}
@@ -318,29 +279,19 @@ export default function PlayerPage() {
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <div
-                      className={cn(
-                        "w-full h-full flex items-center justify-center",
-                        isDark ? "bg-zinc-800" : "bg-gray-200"
-                      )}
-                    >
-                      <Disc3
-                        className={cn(
-                          "w-12 h-12",
-                          isDark ? "text-zinc-600" : "text-gray-400"
-                        )}
-                      />
+                    <div className="w-full h-full flex items-center justify-center bg-tps-surface">
+                      <Disc3 className="w-12 h-12 text-tps-muted" />
                     </div>
                   )}
                 </div>
                 <div>
-                  <p className="text-xs text-primary-500 font-medium uppercase tracking-wider mb-1">
+                  <p className="text-xs text-tps-cyan font-bold uppercase tracking-widest mb-1">
                     Now Playing
                   </p>
-                  <h2 className="text-2xl md:text-3xl font-bold mb-1">
+                  <h2 className="text-2xl md:text-3xl font-bold mb-1 text-white tracking-tight group-hover:text-tps-cyan transition-colors">
                     {currentTrack.title}
                   </h2>
-                  <p className={isDark ? "text-zinc-400" : "text-gray-500"}>
+                  <p className="text-tps-muted font-medium">
                     {currentTrack.artist}
                   </p>
                 </div>
@@ -351,25 +302,14 @@ export default function PlayerPage() {
           {/* Song list */}
           <section>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold">All Songs</h2>
-              <span
-                className={
-                  isDark ? "text-sm text-zinc-500" : "text-sm text-gray-500"
-                }
-              >
-                {filteredSongs.length} tracks
+              <h2 className="text-lg font-bold">All Songs</h2>
+              <span className="text-sm text-tps-muted font-mono">
+                {filteredSongs.length} TRACKS
               </span>
             </div>
 
             {/* Table header */}
-            <div
-              className={cn(
-                "hidden md:grid grid-cols-[16px_4fr_3fr_1fr_40px] gap-4 px-4 py-2 text-xs uppercase tracking-wider border-b mb-2",
-                isDark
-                  ? "text-zinc-500 border-zinc-800/50"
-                  : "text-gray-500 border-gray-200"
-              )}
-            >
+            <div className="hidden md:grid grid-cols-[16px_4fr_3fr_1fr_40px] gap-4 px-4 py-2 text-xs uppercase tracking-wider border-b border-white/5 mb-2 text-tps-muted font-semibold">
               <span>#</span>
               <span>Title</span>
               <span>Album</span>
@@ -389,14 +329,10 @@ export default function PlayerPage() {
                   transition={{ delay: index * 0.03 }}
                   onClick={() => handleSongSelect(index)}
                   className={cn(
-                    "group grid grid-cols-[4fr_1fr] md:grid-cols-[16px_4fr_3fr_1fr_40px] gap-4 px-4 py-3 rounded-lg cursor-pointer transition-all",
+                    "group grid grid-cols-[4fr_1fr] md:grid-cols-[16px_4fr_3fr_1fr_40px] gap-4 px-4 py-3 rounded-xl cursor-pointer transition-all border border-transparent",
                     currentTrackIndex === index
-                      ? isDark
-                        ? "bg-zinc-800/80 border border-zinc-700/50"
-                        : "bg-primary-50 border border-primary-200"
-                      : isDark
-                      ? "hover:bg-zinc-800/50"
-                      : "hover:bg-gray-100"
+                      ? "bg-tps-surface border-tps-cyan/20 shadow-[0_0_15px_-5px_rgba(64,224,255,0.1)]"
+                      : "hover:bg-white/5 hover:border-white/5"
                   )}
                 >
                   {/* Number / Play icon */}
@@ -406,7 +342,7 @@ export default function PlayerPage() {
                         {[0, 1, 2].map((i) => (
                           <motion.div
                             key={i}
-                            className="w-0.5 bg-primary-500 rounded-full"
+                            className="w-0.5 bg-tps-cyan rounded-full"
                             animate={{
                               height: ["30%", "100%", "50%", "80%", "30%"],
                             }}
@@ -420,32 +356,17 @@ export default function PlayerPage() {
                       </div>
                     ) : (
                       <>
-                        <span
-                          className={cn(
-                            "group-hover:hidden text-sm",
-                            isDark ? "text-zinc-500" : "text-gray-500"
-                          )}
-                        >
+                        <span className="group-hover:hidden text-sm text-tps-muted">
                           {index + 1}
                         </span>
-                        <Play
-                          className={cn(
-                            "w-4 h-4 hidden group-hover:block fill-current",
-                            isDark ? "text-white" : "text-gray-900"
-                          )}
-                        />
+                        <Play className="w-4 h-4 hidden group-hover:block fill-current text-white" />
                       </>
                     )}
                   </div>
 
                   {/* Title & Artist */}
                   <div className="flex items-center gap-3 min-w-0">
-                    <div
-                      className={cn(
-                        "relative w-10 h-10 rounded overflow-hidden flex-shrink-0 shadow-md",
-                        isDark ? "bg-zinc-800" : "bg-gray-200"
-                      )}
-                    >
+                    <div className="relative w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 shadow-md bg-tps-surface border border-white/5">
                       {song.albumArt ? (
                         <img
                           src={song.albumArt}
@@ -454,12 +375,7 @@ export default function PlayerPage() {
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center">
-                          <Disc3
-                            className={cn(
-                              "w-5 h-5",
-                              isDark ? "text-zinc-600" : "text-gray-400"
-                            )}
-                          />
+                          <Disc3 className="w-5 h-5 text-tps-muted" />
                         </div>
                       )}
                     </div>
@@ -467,17 +383,12 @@ export default function PlayerPage() {
                       <p
                         className={cn(
                           "font-medium truncate",
-                          currentTrackIndex === index ? "text-primary-500" : ""
+                          currentTrackIndex === index ? "text-tps-cyan" : "text-white group-hover:text-tps-cyan transition-colors"
                         )}
                       >
                         {song.title}
                       </p>
-                      <p
-                        className={cn(
-                          "text-sm truncate",
-                          isDark ? "text-zinc-400" : "text-gray-500"
-                        )}
-                      >
+                      <p className="text-sm truncate text-tps-muted">
                         {song.artist}
                       </p>
                     </div>
@@ -485,26 +396,14 @@ export default function PlayerPage() {
 
                   {/* Album */}
                   <div className="hidden md:flex items-center">
-                    <span
-                      className={cn(
-                        "text-sm truncate cursor-pointer",
-                        isDark
-                          ? "text-zinc-400 hover:text-white hover:underline"
-                          : "text-gray-500 hover:text-gray-900 hover:underline"
-                      )}
-                    >
+                    <span className="text-sm truncate cursor-pointer text-tps-muted hover:text-white hover:underline transition-colors">
                       {song.album || "—"}
                     </span>
                   </div>
 
                   {/* Duration */}
                   <div className="flex items-center justify-end md:justify-start">
-                    <span
-                      className={cn(
-                        "text-sm font-mono",
-                        isDark ? "text-zinc-500" : "text-gray-500"
-                      )}
-                    >
+                    <span className="text-sm font-mono text-tps-muted">
                       {formatDuration(song.duration)}
                     </span>
                   </div>
@@ -513,12 +412,7 @@ export default function PlayerPage() {
                   <div className="hidden md:flex items-center justify-center">
                     <button
                       onClick={(e) => e.stopPropagation()}
-                      className={cn(
-                        "p-1 opacity-0 group-hover:opacity-100 transition-all",
-                        isDark
-                          ? "text-zinc-500 hover:text-white"
-                          : "text-gray-400 hover:text-gray-900"
-                      )}
+                      className="p-1 opacity-0 group-hover:opacity-100 transition-all text-tps-muted hover:text-white"
                     >
                       <MoreHorizontal className="w-4 h-4" />
                     </button>
@@ -529,22 +423,12 @@ export default function PlayerPage() {
 
             {filteredSongs.length === 0 && (
               <div className="text-center py-16">
-                <Disc3
-                  className={cn(
-                    "w-16 h-16 mx-auto mb-4",
-                    isDark ? "text-zinc-700" : "text-gray-300"
-                  )}
-                />
-                <p className={isDark ? "text-zinc-500" : "text-gray-500"}>
+                <Disc3 className="w-16 h-16 mx-auto mb-4 text-tps-surface" />
+                <p className="text-tps-muted">
                   No songs found
                 </p>
                 {searchQuery && (
-                  <p
-                    className={cn(
-                      "text-sm mt-1",
-                      isDark ? "text-zinc-600" : "text-gray-400"
-                    )}
-                  >
+                  <p className="text-sm mt-1 text-tps-muted/80">
                     Try a different search term
                   </p>
                 )}
@@ -589,25 +473,19 @@ export default function PlayerPage() {
         {/* Connection Status Indicator */}
         <div
           className={cn(
-            "fixed top-4 right-4 px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-2 z-50",
+            "fixed top-4 right-4 px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-2 z-50 shadow-lg border border-white/5 backdrop-blur-md",
             connectionStatus === "connected"
-              ? isDark
-                ? "bg-green-500/20 text-green-400"
-                : "bg-green-100 text-green-700"
+              ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
               : connectionStatus === "connecting"
-              ? isDark
-                ? "bg-yellow-500/20 text-yellow-400"
-                : "bg-yellow-100 text-yellow-700"
-              : isDark
-              ? "bg-red-500/20 text-red-400"
-              : "bg-red-100 text-red-700"
+              ? "bg-yellow-500/10 text-yellow-400 border-yellow-500/20"
+              : "bg-red-500/10 text-red-400 border-red-500/20"
           )}
         >
           <span
             className={cn(
-              "w-2 h-2 rounded-full",
+              "w-2 h-2 rounded-full shadow-[0_0_5px_currentColor]",
               connectionStatus === "connected"
-                ? "bg-green-500"
+                ? "bg-emerald-500"
                 : connectionStatus === "connecting"
                 ? "bg-yellow-500 animate-pulse"
                 : "bg-red-500"

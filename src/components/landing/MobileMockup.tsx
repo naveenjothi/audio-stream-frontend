@@ -12,9 +12,9 @@ export const MobileMockup: React.FC = () => {
           <div className="text-center mb-16">
               <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
                 Your Music. <br className="md:hidden" />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-tps-blue">Anywhere.</span>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-tps-lilac to-tps-cyan">Anywhere.</span>
               </h2>
-              <p className="text-neutral-400 max-w-xl mx-auto">
+              <p className="text-tps-muted max-w-xl mx-auto">
                 The same premium experience on your desktop and your mobile device. 
                 Seamlessly synced, beautifully designed.
               </p>

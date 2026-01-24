@@ -26,6 +26,7 @@ import type { Song as ApiSong } from "@/types/api";
 import { logOut } from "@/lib/firebase";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
+import { Logo } from "@/components/landing/Logo";
 
 // Local Song type for UI (maps from API)
 interface Song {
@@ -168,39 +169,17 @@ export default function DashboardPage() {
 
   return (
     <AuthGuard>
-      <div
-        className={cn(
-          "min-h-screen transition-colors duration-300",
-          isDark
-            ? "bg-gradient-to-b from-zinc-900 via-zinc-950 to-black text-white"
-            : "bg-gradient-to-b from-gray-100 via-gray-50 to-gray-100 text-zinc-900"
-        )}
-      >
+      <div className="min-h-screen bg-tps-charcoal text-white transition-colors duration-300">
         {/* Header */}
-        <header
-          className={cn(
-            "sticky top-0 z-40 backdrop-blur-xl border-b",
-            isDark
-              ? "bg-zinc-900/80 border-zinc-800/50"
-              : "bg-gray-50/90 border-gray-200"
-          )}
-        >
+        <header className="sticky top-0 z-40 backdrop-blur-xl border-b border-white/5 bg-tps-charcoal/80">
           <div className="max-w-7xl mx-auto px-4 py-4">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center">
-                  <Disc3 className="w-6 h-6 text-white" />
-                </div>
-                <span className="text-xl font-bold hidden sm:block">
-                  SoundStream
-                </span>
-              </div>
-
+              <Logo/>
               <div className="flex items-center gap-2">
                 <button
                   onClick={handleRefresh}
                   disabled={isRefreshing}
-                  className="btn-ghost p-2"
+                  className="p-2 hover:bg-white/5 rounded-full text-tps-muted hover:text-white transition-colors"
                   title="Refresh"
                 >
                   <RefreshCw
@@ -208,29 +187,19 @@ export default function DashboardPage() {
                   />
                 </button>
                 <Link href="/settings">
-                  <button className="btn-ghost p-2" title="Settings">
+                  <button className="p-2 hover:bg-white/5 rounded-full text-tps-muted hover:text-white transition-colors" title="Settings">
                     <Settings className="w-5 h-5" />
                   </button>
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="btn-ghost p-2 text-red-400 hover:text-red-300"
+                  className="p-2 hover:bg-white/5 rounded-full text-red-400 hover:text-red-300 transition-colors"
                   title="Log out"
                 >
                   <LogOut className="w-5 h-5" />
                 </button>
-                <div
-                  className={cn(
-                    "w-8 h-8 rounded-full flex items-center justify-center ml-2",
-                    isDark ? "bg-zinc-700" : "bg-gray-200"
-                  )}
-                >
-                  <User
-                    className={cn(
-                      "w-4 h-4",
-                      isDark ? "text-zinc-300" : "text-gray-600"
-                    )}
-                  />
+                <div className="w-8 h-8 rounded-full flex items-center justify-center ml-2 bg-tps-surface border border-white/5">
+                  <User className="w-4 h-4 text-tps-muted" />
                 </div>
               </div>
             </div>
@@ -245,212 +214,108 @@ export default function DashboardPage() {
             animate={{ opacity: 1, y: 0 }}
             className="mb-8"
           >
-            <h1 className="text-3xl md:text-4xl font-bold mb-2">
+            <h1 className="text-3xl md:text-4xl font-bold mb-2 tracking-tight">
               {greeting()}
               {user?.displayName ? `, ${user.displayName.split(" ")[0]}` : ""}
             </h1>
-            <p className={isDark ? "text-zinc-400" : "text-gray-500"}>
-              Ready to stream your music?
+            <p className="text-tps-muted">
+              Ready to stream in high fidelity?
             </p>
           </motion.div>
 
-          {/* Device status card */}
-          <motion.section
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="mb-8"
-          >
-            <div
-              className={cn(
-                "p-6 rounded-2xl border transition-all",
-                connectedDevice
-                  ? isDark
-                    ? "bg-gradient-to-r from-primary-900/30 to-zinc-900/50 border-primary-500/30"
-                    : "bg-gradient-to-r from-primary-100 to-white border-primary-300"
-                  : isDark
-                  ? "bg-zinc-900/50 border-zinc-800"
-                  : "bg-gray-50 border-gray-200 shadow-sm"
-              )}
+          {/* Bento Grid Layout */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            
+            {/* Device Status - Large Card (2 columns on Desktop) */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="md:col-span-2 p-8 rounded-tps bg-tps-surface border border-white/5 relative overflow-hidden group"
             >
-              <div className="flex items-center justify-between flex-wrap gap-4">
-                <div className="flex items-center gap-4">
-                  <div
-                    className={cn(
-                      "w-14 h-14 rounded-xl flex items-center justify-center",
-                      connectedDevice
-                        ? "bg-primary-500/20"
-                        : isDark
-                        ? "bg-zinc-800"
-                        : "bg-gray-100"
-                    )}
-                  >
-                    <Smartphone
-                      className={cn(
-                        "w-7 h-7",
-                        connectedDevice
-                          ? "text-primary-500"
-                          : isDark
-                          ? "text-zinc-500"
-                          : "text-gray-400"
-                      )}
-                    />
+                {/* Background Decor */}
+                <div className={cn(
+                    "absolute top-0 right-0 w-64 h-64 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2 transition-colors duration-700",
+                    connectedDevice ? "bg-tps-cyan/10" : "bg-white/5"
+                )} />
+
+              <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+                <div className="flex items-start gap-5">
+                  <div className={cn(
+                      "w-16 h-16 rounded-2xl flex items-center justify-center transition-colors",
+                      connectedDevice ? "bg-tps-cyan/20 text-tps-cyan" : "bg-white/5 text-tps-muted"
+                  )}>
+                    <Smartphone className="w-8 h-8" />
                   </div>
+                  
                   <div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 mb-1">
                       {connectedDevice ? (
                         <>
-                          <Wifi className="w-4 h-4 text-primary-500" />
-                          <span className="text-sm font-medium text-primary-500">
+                          <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_currentColor]" />
+                          <span className="text-xs font-semibold uppercase tracking-wider text-emerald-500">
                             Connected
                           </span>
                         </>
                       ) : (
                         <>
-                          <WifiOff
-                            className={cn(
-                              "w-4 h-4",
-                              isDark ? "text-zinc-500" : "text-gray-400"
-                            )}
-                          />
-                          <span
-                            className={cn(
-                              "text-sm font-medium",
-                              isDark ? "text-zinc-500" : "text-gray-500"
-                            )}
-                          >
-                            No device connected
+                          <div className="w-2 h-2 rounded-full bg-tps-muted" />
+                          <span className="text-xs font-semibold uppercase tracking-wider text-tps-muted">
+                            Offline
                           </span>
                         </>
                       )}
                     </div>
-                    <h3 className="text-lg font-semibold">
-                      {connectedDevice
-                        ? pairedDevice.device_name
-                        : "Connect your phone"}
+                    
+                    <h3 className="text-2xl font-bold text-white mb-1">
+                      {connectedDevice ? pairedDevice.device_name : "No Device Paired"}
                     </h3>
-                    <p
-                      className={
-                        isDark
-                          ? "text-sm text-zinc-400"
-                          : "text-sm text-gray-500"
-                      }
-                    >
+                    <p className="text-tps-muted text-sm max-w-xs">
                       {connectedDevice
-                        ? "Ready to stream audio to your browser"
-                        : "Pair your mobile device to start streaming"}
+                        ? "Ready to stream bit-perfect audio."
+                        : "Pair your mobile device to enable peer-to-peer streaming."}
                     </p>
                   </div>
                 </div>
 
                 <Link href="/pair">
-                  <button
-                    className={cn(
-                      "px-4 py-2 rounded-full font-medium flex items-center gap-2 transition-all",
+                  <button className={cn(
+                      "px-6 py-3 rounded-full font-semibold flex items-center gap-2 transition-all shadow-lg",
                       connectedDevice
-                        ? isDark
-                          ? "bg-zinc-800 hover:bg-zinc-700 text-white"
-                          : "bg-gray-200 hover:bg-gray-300 text-gray-800"
-                        : "bg-primary-600 hover:bg-primary-500 text-white"
-                    )}
-                  >
-                    {connectedDevice ? (
-                      <>
-                        <Settings className="w-4 h-4" />
-                        Manage
-                      </>
-                    ) : (
-                      <>
-                        <Smartphone className="w-4 h-4" />
-                        Connect Device
-                      </>
-                    )}
+                        ? "bg-white/10 hover:bg-white/15 text-white ring-1 ring-white/10"
+                        : "bg-gradient-to-r from-tps-cyan to-blue-500 hover:shadow-tps-cyan/25 text-black border-none"
+                    )}>
+                    {connectedDevice ? "Manage Device" : "Connect Now"}
+                    <ChevronRight className="w-4 h-4" />
                   </button>
                 </Link>
               </div>
-            </div>
-          </motion.section>
+            </motion.div>
 
-          {/* Quick stats */}
-          <motion.section
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8"
-          >
-            <div
-              className={cn(
-                "p-4 rounded-xl border",
-                isDark
-                  ? "bg-zinc-900/50 border-zinc-800"
-                  : "bg-gray-50 border-gray-200 shadow-sm"
-              )}
-            >
-              <Music className="w-5 h-5 text-primary-500 mb-2" />
-              <p className="text-2xl font-bold">{songs.length}</p>
-              <p
-                className={
-                  isDark ? "text-sm text-zinc-400" : "text-sm text-gray-500"
-                }
-              >
-                Total songs
-              </p>
+            {/* Quick Stats - Small High-Density Cards */}
+            <div className="grid grid-cols-2 gap-4">
+                 {[
+                    { icon: Music, label: "Songs", value: songs.length, color: "text-tps-cyan" },
+                    { icon: Play, label: "Plays", value: "128", color: "text-tps-lilac" },
+                    { icon: Clock, label: "Hours", value: "2.5h", color: "text-emerald-400" },
+                    { icon: Smartphone, label: "Devices", value: pairedDevice ? 1 : 0, color: "text-orange-400" },
+                 ].map((stat, i) => (
+                    <motion.div
+                        key={stat.label}
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.2 + (i * 0.05) }}
+                        className="p-5 rounded-3xl bg-tps-surface border border-white/5 flex flex-col justify-between hover:border-white/10 transition-colors"
+                    >
+                         <stat.icon className={cn("w-6 h-6 mb-4", stat.color)} />
+                         <div>
+                             <p className="text-2xl font-bold text-white">{stat.value}</p>
+                             <p className="text-xs text-tps-muted uppercase font-bold tracking-wider">{stat.label}</p>
+                         </div>
+                    </motion.div>
+                 ))}
             </div>
-            <div
-              className={cn(
-                "p-4 rounded-xl border",
-                isDark
-                  ? "bg-zinc-900/50 border-zinc-800"
-                  : "bg-gray-50 border-gray-200 shadow-sm"
-              )}
-            >
-              <Smartphone className="w-5 h-5 text-blue-500 mb-2" />
-              <p className="text-2xl font-bold">{pairedDevice ? 1 : 0}</p>
-              <p
-                className={
-                  isDark ? "text-sm text-zinc-400" : "text-sm text-gray-500"
-                }
-              >
-                Devices
-              </p>
-            </div>
-            <div
-              className={cn(
-                "p-4 rounded-xl border",
-                isDark
-                  ? "bg-zinc-900/50 border-zinc-800"
-                  : "bg-gray-50 border-gray-200 shadow-sm"
-              )}
-            >
-              <Clock className="w-5 h-5 text-purple-500 mb-2" />
-              <p className="text-2xl font-bold">2.5h</p>
-              <p
-                className={
-                  isDark ? "text-sm text-zinc-400" : "text-sm text-gray-500"
-                }
-              >
-                Streamed today
-              </p>
-            </div>
-            <div
-              className={cn(
-                "p-4 rounded-xl border",
-                isDark
-                  ? "bg-zinc-900/50 border-zinc-800"
-                  : "bg-gray-50 border-gray-200 shadow-sm"
-              )}
-            >
-              <Play className="w-5 h-5 text-orange-500 mb-2" />
-              <p className="text-2xl font-bold">128</p>
-              <p
-                className={
-                  isDark ? "text-sm text-zinc-400" : "text-sm text-gray-500"
-                }
-              >
-                Plays this week
-              </p>
-            </div>
-          </motion.section>
+          </div>
 
           {/* Recent songs */}
           <motion.section
@@ -458,16 +323,11 @@ export default function DashboardPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
           >
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold">Your Library</h2>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold tracking-tight">Recently Added</h2>
               <Link
                 href="/player"
-                className={cn(
-                  "flex items-center gap-1 text-sm transition-colors",
-                  isDark
-                    ? "text-zinc-400 hover:text-white"
-                    : "text-gray-500 hover:text-gray-900"
-                )}
+                className="flex items-center gap-1 text-sm text-tps-cyan hover:text-tps-lilac transition-colors font-medium"
               >
                 View all
                 <ChevronRight className="w-4 h-4" />
@@ -477,8 +337,8 @@ export default function DashboardPage() {
             {isLoadingSongs ? (
               <Loading text="Loading your library..." />
             ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                {songs.slice(0, 5).map((song, index) => (
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                {songs.slice(0, 6).map((song, index) => (
                   <motion.div
                     key={song.id}
                     initial={{ opacity: 0, scale: 0.9 }}
@@ -487,50 +347,32 @@ export default function DashboardPage() {
                   >
                     <div
                       onClick={() => handleSongSelect(song, index)}
-                      className={cn(
-                        "group block p-3 rounded-xl border transition-all cursor-pointer",
-                        isDark
-                          ? "bg-zinc-900/50 hover:bg-zinc-800/50 border-zinc-800"
-                          : "bg-gray-50 hover:bg-gray-100 border-gray-200 shadow-sm"
-                      )}
+                      className="group block p-3 rounded-2xl bg-transparent hover:bg-tps-surface transition-all cursor-pointer"
                     >
-                      <div
-                        className={cn(
-                          "relative aspect-square mb-3 rounded-lg overflow-hidden",
-                          isDark ? "bg-zinc-800" : "bg-gray-100"
-                        )}
-                      >
+                      <div className="relative aspect-square mb-4 rounded-xl overflow-hidden bg-tps-surface shadow-md group-hover:shadow-tps-cyan/10 transition-shadow">
                         {song.albumArt ? (
                           <img
                             src={song.albumArt}
                             alt={song.title}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                           />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center">
-                            <Disc3
-                              className={cn(
-                                "w-12 h-12",
-                                isDark ? "text-zinc-600" : "text-gray-400"
-                              )}
-                            />
+                          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-tps-surface to-black border border-white/5">
+                            <Disc3 className="w-10 h-10 text-tps-muted" />
                           </div>
                         )}
-                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                          <div className="w-12 h-12 rounded-full bg-primary-500 flex items-center justify-center shadow-lg">
-                            <Play className="w-5 h-5 text-white fill-current ml-0.5" />
+                        
+                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300 backdrop-blur-[2px]">
+                          <div className="w-12 h-12 rounded-full bg-tps-cyan flex items-center justify-center shadow-lg transform scale-90 group-hover:scale-100 transition-transform">
+                            <Play className="w-5 h-5 text-black fill-current ml-0.5" />
                           </div>
                         </div>
                       </div>
-                      <h3 className="font-medium truncate text-sm">
+                      
+                      <h3 className="font-bold text-white truncate text-sm mb-1 group-hover:text-tps-cyan transition-colors">
                         {song.title}
                       </h3>
-                      <p
-                        className={cn(
-                          "text-xs truncate",
-                          isDark ? "text-zinc-400" : "text-gray-500"
-                        )}
-                      >
+                      <p className="text-xs text-tps-muted truncate">
                         {song.artist}
                       </p>
                     </div>

@@ -30,12 +30,12 @@ export const GlowButton = ({
   return (
     <Button
       className={cn(
-        'relative overflow-hidden transition-all duration-300 rounded-full group',
-        // Custom variant styles that might not be in Shadcn's default theme
-        variant === 'primary' && 'bg-primary-500 text-zinc-950 hover:bg-primary-400 shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_35px_rgba(16,185,129,0.6)] border-transparent',
-        variant === 'secondary' && 'bg-zinc-800/50 backdrop-blur-md border-white/10 text-white hover:bg-zinc-700/50 hover:border-white/30 hover:shadow-[0_0_20px_rgba(255,255,255,0.1)]',
-        variant === 'ghost' && 'bg-transparent text-zinc-400 hover:text-white hover:bg-white/5',
-        variant === 'danger' && 'bg-red-500/10 border-red-500/50 text-red-500 hover:bg-red-500/20 hover:shadow-[0_0_20px_rgba(239,68,68,0.4)]',
+        'relative overflow-hidden transition-all duration-300 rounded-tps group font-medium tracking-wide',
+        // Custom variant styles
+        variant === 'primary' && 'bg-tps-cyan text-tps-charcoal hover:bg-tps-cyan/90 shadow-[0_0_20px_rgba(64,224,255,0.3)] hover:shadow-[0_0_35px_rgba(64,224,255,0.6)] border-transparent',
+        variant === 'secondary' && 'bg-tps-surface border border-white/10 text-white hover:bg-white/5 hover:border-tps-cyan/30 hover:shadow-[0_0_20px_rgba(64,224,255,0.15)]',
+        variant === 'ghost' && 'bg-transparent text-tps-muted hover:text-white hover:bg-white/5',
+        variant === 'danger' && 'bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20 hover:shadow-[0_0_20px_rgba(239,68,68,0.2)]',
         className
       )}
       variant={variant === 'ghost' ? 'ghost' : 'default'} // Use 'default' for others and override with classNames
@@ -52,7 +52,7 @@ export const GlowButton = ({
 
       {/* Shine effect */}
       {variant === 'primary' && (
-        <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent z-0" />
+        <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/40 to-transparent z-0" />
       )}
     </Button>
   );

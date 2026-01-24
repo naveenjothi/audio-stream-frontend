@@ -142,43 +142,45 @@ export default function PairPage() {
 
   return (
     <AuthGuard>
-      <div className="min-h-screen bg-gradient-to-br from-zinc-950 via-zinc-900 to-black text-white">
+      <div className="min-h-screen bg-tps-charcoal text-white relative flex flex-col justify-center items-center overflow-hidden">
         {/* Background effects */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-1/3 left-1/4 w-96 h-96 bg-primary-500/5 rounded-full blur-3xl" />
-          <div className="absolute bottom-1/3 right-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl" />
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-tps-cyan/5 rounded-full blur-[120px]" />
+          <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-tps-lilac/5 rounded-full blur-[120px]" />
         </div>
 
         {/* Header */}
-        <header className="relative z-10 p-4">
+        <header className="absolute top-0 left-0 p-6 z-20 w-full">
           <Link
             href="/dashboard"
-            className="inline-flex items-center gap-2 text-zinc-400 hover:text-white transition-colors"
+            className="inline-flex items-center gap-2 text-tps-muted hover:text-white transition-colors group"
           >
-            <ArrowLeft className="w-4 h-4" />
-            Back to Dashboard
+            <div className="p-2 rounded-full group-hover:bg-white/5 transition-colors">
+                <ArrowLeft className="w-5 h-5" />
+            </div>
+            <span className="font-medium">Back to Dashboard</span>
           </Link>
         </header>
 
         {/* Main content */}
-        <main className="relative z-10 flex flex-col items-center justify-center px-4 py-12">
+        <main className="relative z-10 w-full max-w-lg px-6">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="w-full max-w-lg"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
           >
             {/* Title */}
-            <div className="text-center mb-10">
+            <div className="text-center mb-12">
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
-                transition={{ type: "spring", stiffness: 200 }}
+                transition={{ type: "spring", stiffness: 200, damping: 20 }}
                 className={cn(
-                  "inline-flex items-center justify-center w-20 h-20 rounded-2xl mb-6 transition-colors",
-                  status === "success" && "bg-primary-500/20",
-                  status === "error" && "bg-red-500/20",
-                  status === "verifying" && "bg-primary-500/10",
-                  status === "idle" && "bg-zinc-800"
+                  "inline-flex items-center justify-center w-24 h-24 rounded-full mb-8 transition-all shadow-xl",
+                  status === "success" && "bg-emerald-500/10 text-emerald-500 shadow-emerald-500/20",
+                  status === "error" && "bg-red-500/10 text-red-500 shadow-red-500/20",
+                  status === "verifying" && "bg-tps-cyan/10 text-tps-cyan shadow-tps-cyan/20 animate-pulse",
+                  status === "idle" && "bg-tps-surface border border-white/5 text-tps-muted"
                 )}
               >
                 <AnimatePresence mode="wait">
@@ -193,12 +195,16 @@ export default function PairPage() {
                 </AnimatePresence>
               </motion.div>
 
-              <h1 className="text-3xl font-bold mb-2">
-                {status === "success"
-                  ? "Device Connected!"
-                  : "Pair Your Device"}
+              <h1 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight">
+                {status === "success" ? (
+                    <span className="text-emerald-400">Device Connected</span>
+                ) : (
+                    <>
+                        Pair Your <span className="text-gradient">Device</span>
+                    </>
+                )}
               </h1>
-              <p className="text-zinc-400">
+              <p className="text-tps-muted text-lg">
                 {status === "success"
                   ? "Redirecting to dashboard..."
                   : status === "error"
@@ -208,7 +214,10 @@ export default function PairPage() {
             </div>
 
             {/* Pairing card */}
-            <div className="bg-zinc-900/50 backdrop-blur-xl border border-zinc-800 rounded-2xl p-8">
+            <div className="bg-tps-surface backdrop-blur-xl border border-white/5 rounded-tps p-8 shadow-2xl relative overflow-hidden group">
+               {/* Subtle border gradient on hover */}
+               <div className="absolute inset-0 rounded-tps border border-white/0 group-hover:border-tps-cyan/20 transition-colors pointer-events-none" />
+
               <AnimatePresence mode="wait">
                 {status === "success" ? (
                   <motion.div
@@ -218,36 +227,32 @@ export default function PairPage() {
                     exit={{ opacity: 0, scale: 0.9 }}
                     className="text-center py-8"
                   >
-                    <div className="flex items-center justify-center gap-4 mb-6">
-                      <div className="w-16 h-16 rounded-xl bg-zinc-800 flex items-center justify-center">
-                        <Monitor className="w-8 h-8 text-zinc-400" />
+                    <div className="flex items-center justify-center gap-6 mb-8">
+                      <div className="w-20 h-20 rounded-2xl bg-tps-charcoal border border-white/5 flex items-center justify-center shadow-inner">
+                        <Monitor className="w-10 h-10 text-tps-muted" />
                       </div>
                       <motion.div
                         initial={{ width: 0 }}
-                        animate={{ width: 60 }}
-                        transition={{ delay: 0.3, duration: 0.5 }}
-                        className="h-0.5 bg-gradient-to-r from-primary-500 to-primary-300 rounded-full"
+                        animate={{ width: 80 }}
+                        transition={{ delay: 0.3, duration: 0.6, ease: "circOut" }}
+                        className="h-1 bg-gradient-to-r from-tps-cyan to-tps-lilac rounded-full shadow-[0_0_10px_rgba(64,224,255,0.5)]"
                       />
                       <motion.div
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
                         transition={{ delay: 0.5, type: "spring" }}
-                        className="w-16 h-16 rounded-xl bg-primary-500/20 border border-primary-500/30 flex items-center justify-center"
+                        className="w-20 h-20 rounded-2xl bg-gradient-to-br from-tps-cyan to-tps-lilac flex items-center justify-center shadow-lg shadow-tps-cyan/20 text-white"
                       >
-                        <Smartphone className="w-8 h-8 text-primary-500" />
+                        <Smartphone className="w-10 h-10" />
                       </motion.div>
                     </div>
 
-                    <div className="flex items-center justify-center gap-2 text-primary-500 mb-4">
-                      <Zap className="w-4 h-4" />
-                      <span className="text-sm font-medium">
+                    <div className="flex items-center justify-center gap-2 text-emerald-400 mb-2">
+                      <Zap className="w-5 h-5 fill-current" />
+                      <span className="text-lg font-bold">
                         Connection Established
                       </span>
                     </div>
-
-                    <p className="text-zinc-400 text-sm">
-                      Redirecting to dashboard...
-                    </p>
                   </motion.div>
                 ) : (
                   <motion.div
@@ -257,7 +262,7 @@ export default function PairPage() {
                     exit={{ opacity: 0 }}
                   >
                     {/* Code input */}
-                    <div className="flex justify-center gap-2 sm:gap-3 mb-8">
+                    <div className="flex justify-center gap-3 mb-10">
                       {pairCode.map((digit, index) => (
                         <motion.div
                           key={index}
@@ -280,12 +285,13 @@ export default function PairPage() {
                             onPaste={handlePaste}
                             disabled={status === "verifying"}
                             className={cn(
-                              "w-12 h-14 sm:w-14 sm:h-16 text-center text-2xl font-bold bg-zinc-800/50 border rounded-lg text-white focus:outline-none focus:ring-2 transition-all",
+                              "w-12 h-16 sm:w-14 sm:h-20 text-center text-3xl font-bold rounded-xl outline-none transition-all duration-300",
+                              "bg-tps-charcoal/50 border border-white/10 shadow-inner text-white",
                               status === "error"
-                                ? "border-red-500/50 focus:border-red-500 focus:ring-red-500/20"
+                                ? "border-red-500/50 text-red-400 focus:ring-2 focus:ring-red-500/30"
                                 : digit
-                                ? "border-primary-500/50 focus:border-primary-500 focus:ring-primary-500/20"
-                                : "border-zinc-700 focus:border-primary-500 focus:ring-primary-500/20"
+                                ? "border-tps-cyan/50 shadow-[0_0_15px_-5px_rgba(64,224,255,0.3)]"
+                                : "focus:border-tps-cyan focus:shadow-[0_0_15px_-5px_rgba(64,224,255,0.3)] focus:ring-1 focus:ring-tps-cyan/50"
                             )}
                           />
                         </motion.div>
@@ -297,11 +303,11 @@ export default function PairPage() {
                       <motion.div
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="flex items-center justify-center gap-2 mb-6"
+                        className="flex items-center justify-center gap-2 mb-8"
                       >
                         <button
                           onClick={handleReset}
-                          className="px-4 py-2 rounded-lg border border-zinc-700 text-zinc-300 hover:bg-zinc-800 transition-colors flex items-center gap-2"
+                          className="px-6 py-3 rounded-full bg-red-500/10 hover:bg-red-500/20 text-red-400 font-medium transition-colors flex items-center gap-2 border border-red-500/20"
                         >
                           <RefreshCw className="w-4 h-4" />
                           Try Again
@@ -314,11 +320,11 @@ export default function PairPage() {
                       <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        className="flex flex-col items-center gap-3"
+                        className="flex flex-col items-center gap-3 mb-8"
                       >
-                        <div className="flex items-center gap-2 text-zinc-400">
-                          <Loader2 className="w-4 h-4 animate-spin" />
-                          <span>Verifying code...</span>
+                        <div className="flex items-center gap-3 text-tps-cyan">
+                          <Loader2 className="w-5 h-5 animate-spin" />
+                          <span className="font-medium tracking-wide">Verifying code...</span>
                         </div>
                       </motion.div>
                     )}
@@ -326,43 +332,43 @@ export default function PairPage() {
                     {/* Instructions */}
                     {status === "idle" && (
                       <div className="space-y-4">
-                        <div className="flex items-center gap-4 p-4 bg-zinc-800/30 rounded-xl">
-                          <div className="w-10 h-10 rounded-lg bg-zinc-800 flex items-center justify-center flex-shrink-0">
-                            <QrCode className="w-5 h-5 text-zinc-400" />
+                        <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors">
+                          <div className="w-12 h-12 rounded-xl bg-tps-charcoal flex items-center justify-center flex-shrink-0 border border-white/5">
+                            <QrCode className="w-6 h-6 text-tps-muted" />
                           </div>
                           <div>
-                            <p className="text-sm text-white font-medium">
+                            <p className="text-white font-semibold mb-0.5">
                               Step 1
                             </p>
-                            <p className="text-xs text-zinc-400">
-                              Open SoundStream on your phone
+                            <p className="text-sm text-tps-muted">
+                              Open <span className="text-tps-cyan font-medium">TPS</span> on your phone
                             </p>
                           </div>
                         </div>
 
-                        <div className="flex items-center gap-4 p-4 bg-zinc-800/30 rounded-xl">
-                          <div className="w-10 h-10 rounded-lg bg-zinc-800 flex items-center justify-center flex-shrink-0">
-                            <Smartphone className="w-5 h-5 text-zinc-400" />
+                        <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors">
+                          <div className="w-12 h-12 rounded-xl bg-tps-charcoal flex items-center justify-center flex-shrink-0 border border-white/5">
+                            <Smartphone className="w-6 h-6 text-tps-muted" />
                           </div>
                           <div>
-                            <p className="text-sm text-white font-medium">
+                            <p className="text-white font-semibold mb-0.5">
                               Step 2
                             </p>
-                            <p className="text-xs text-zinc-400">
+                            <p className="text-sm text-tps-muted">
                               Tap &quot;Connect to Browser&quot; in settings
                             </p>
                           </div>
                         </div>
 
-                        <div className="flex items-center gap-4 p-4 bg-zinc-800/30 rounded-xl">
-                          <div className="w-10 h-10 rounded-lg bg-primary-500/20 flex items-center justify-center flex-shrink-0">
-                            <Wifi className="w-5 h-5 text-primary-500" />
+                        <div className="flex items-center gap-4 p-4 rounded-2xl bg-tps-cyan/10 border border-tps-cyan/20 hover:bg-tps-cyan/15 transition-colors">
+                          <div className="w-12 h-12 rounded-xl bg-tps-cyan text-tps-charcoal flex items-center justify-center flex-shrink-0 shadow-lg shadow-tps-cyan/20">
+                            <Wifi className="w-6 h-6" />
                           </div>
                           <div>
-                            <p className="text-sm text-white font-medium">
+                            <p className="text-white font-semibold mb-0.5">
                               Step 3
                             </p>
-                            <p className="text-xs text-zinc-400">
+                            <p className="text-sm text-tps-cyan/80 font-medium">
                               Enter the 6-digit code shown
                             </p>
                           </div>
@@ -375,20 +381,26 @@ export default function PairPage() {
             </div>
 
             {/* Device types */}
-            <div className="mt-8 text-center">
-              <p className="text-zinc-500 text-sm mb-4">Supported devices</p>
-              <div className="flex items-center justify-center gap-6">
-                <div className="flex flex-col items-center gap-1 text-zinc-400">
-                  <Smartphone className="w-6 h-6" />
-                  <span className="text-xs">Phone</span>
+            <div className="mt-12 text-center">
+              <p className="text-tps-muted text-sm uppercase tracking-widest font-bold mb-6 opacity-60">Supported Devices</p>
+              <div className="flex items-center justify-center gap-10">
+                <div className="group flex flex-col items-center gap-3 text-tps-muted hover:text-white transition-colors">
+                  <div className="w-12 h-12 rounded-2xl bg-tps-surface border border-white/5 flex items-center justify-center group-hover:border-tps-cyan/30 group-hover:shadow-[0_0_15px_-5px_rgba(64,224,255,0.3)] transition-all">
+                    <Smartphone className="w-6 h-6" />
+                  </div>
+                  <span className="text-xs font-medium">iOS / Android</span>
                 </div>
-                <div className="flex flex-col items-center gap-1 text-zinc-400">
-                  <Tablet className="w-6 h-6" />
-                  <span className="text-xs">Tablet</span>
+                <div className="group flex flex-col items-center gap-3 text-tps-muted hover:text-white transition-colors">
+                  <div className="w-12 h-12 rounded-2xl bg-tps-surface border border-white/5 flex items-center justify-center group-hover:border-tps-cyan/30 group-hover:shadow-[0_0_15px_-5px_rgba(64,224,255,0.3)] transition-all">
+                    <Tablet className="w-6 h-6" />
+                  </div>
+                  <span className="text-xs font-medium">Tablet</span>
                 </div>
-                <div className="flex flex-col items-center gap-1 text-zinc-400">
-                  <Monitor className="w-6 h-6" />
-                  <span className="text-xs">Desktop</span>
+                <div className="group flex flex-col items-center gap-3 text-tps-muted hover:text-white transition-colors">
+                  <div className="w-12 h-12 rounded-2xl bg-tps-surface border border-white/5 flex items-center justify-center group-hover:border-tps-cyan/30 group-hover:shadow-[0_0_15px_-5px_rgba(64,224,255,0.3)] transition-all">
+                    <Monitor className="w-6 h-6" />
+                  </div>
+                  <span className="text-xs font-medium">Desktop</span>
                 </div>
               </div>
             </div>

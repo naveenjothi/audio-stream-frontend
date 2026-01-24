@@ -73,11 +73,16 @@ const config: Config = {
   				'4': 'hsl(var(--chart-4))',
   				'5': 'hsl(var(--chart-5))'
   			},
-            // TPS Brand Colors
-            'tps-charcoal': '#121212',
-            'tps-blue': '#3B82F6',
+            // TPS Design System
+            tps: {
+              charcoal: '#0B0D10', // Soft Dark Mode Base
+              surface: '#16191D',  // Card/Section Background
+              cyan: '#40E0FF',     // Primary Action (Electric Cyan)
+              lilac: '#B9A7FF',    // Secondary Accent
+              muted: '#8E95A1',    // Low-emphasis text
+            },
   		},
-  		fontFamily: {
+        fontFamily: {
   			sans: [
   				'Inter',
   				'system-ui',
@@ -106,8 +111,9 @@ const config: Config = {
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
-  			sm: 'calc(var(--radius) - 4px)'
-  		}
+  			sm: 'calc(var(--radius) - 4px)',
+            'tps': '1.5rem',
+  		},
   	}
   },
   plugins: [require("tailwindcss-animate")],

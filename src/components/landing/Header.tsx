@@ -14,14 +14,14 @@ export const Header: React.FC = () => {
         <div className="flex items-center gap-4">
           <Link 
             href="/login" 
-            className="text-sm font-medium text-neutral-400 hover:text-white transition-colors"
+            className="text-sm font-medium text-tps-muted hover:text-white transition-colors"
             data-testid="nav-login-link"
           >
             Sign In
           </Link>
           <Link 
             href="/login" 
-            className="px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 text-white text-sm font-medium transition-colors border border-white/10"
+            className="px-4 py-2 rounded-full bg-tps-surface hover:bg-white/10 text-white text-sm font-medium transition-colors border border-white/10 hover:border-white/20"
             data-testid="nav-get-started-button"
           >
             Get Started

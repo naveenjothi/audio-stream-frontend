@@ -31,21 +31,21 @@ export const UnifiedPlayer: React.FC = () => {
   const isPlaying = true; // Mock state
 
   return (
-    <div className="bg-tps-charcoal w-full max-w-sm mx-auto p-6 rounded-[32px] border border-white/10 shadow-2xl relative overflow-hidden">
+    <div className="bg-tps-surface w-full max-w-sm mx-auto p-6 rounded-tps border border-white/5 shadow-2xl relative overflow-hidden">
         {/* Device Status Indicator */}
         <div className="absolute top-6 right-6 flex items-center gap-2" data-testid="player-connection-status">
-             <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-             <span className="text-xs text-neutral-400 font-medium">Connected</span>
+             <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_currentColor]" />
+             <span className="text-xs text-tps-muted font-medium">Connected</span>
         </div>
 
       {/* Album Art */}
       <div className="relative mb-8 mt-4 mx-auto w-64 h-64">
            {/* Glow Effect */}
-           <div className="absolute inset-0 bg-tps-blue/20 blur-2xl rounded-full" />
-           <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-2xl border border-white/5 bg-neutral-900 group">
+           <div className="absolute inset-0 bg-tps-lilac/10 blur-3xl rounded-full" />
+           <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-2xl border border-white/5 bg-tps-charcoal group">
                 {/* Placeholder Gradient */}
-                <div className="w-full h-full bg-gradient-to-br from-neutral-800 to-neutral-950 flex items-center justify-center">
-                    <div className="w-16 h-16 text-neutral-700">
+                <div className="w-full h-full bg-gradient-to-br from-tps-surface to-black flex items-center justify-center">
+                    <div className="w-16 h-16 text-tps-muted">
                       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
                     </div>
                 </div>
@@ -55,15 +55,15 @@ export const UnifiedPlayer: React.FC = () => {
       {/* Track Info */}
       <div className="text-center mb-8 space-y-1">
           <h3 className="text-2xl font-bold text-white tracking-tight truncate">Midnight Waves</h3>
-          <p className="text-neutral-400 font-medium">Lunar Orchestra</p>
+          <p className="text-tps-muted font-medium">Lunar Orchestra</p>
       </div>
 
       {/* Waveform Visualizer (Mock) */}
-      <div className="h-12 flex items-center justify-center gap-1 mb-8 opacity-50">
+      <div className="h-12 flex items-center justify-center gap-1 mb-8 opacity-60">
           {[...Array(20)].map((_, i) => (
              <div 
                 key={i} 
-                className="w-1 bg-tps-blue rounded-full animate-music-bar"
+                className="w-1 bg-gradient-to-t from-tps-cyan to-tps-lilac rounded-full animate-music-bar"
                 style={{ 
                     height: `${Math.max(20, Math.random() * 100)}%`,
                     animationDelay: `${i * 0.05}s`
@@ -75,18 +75,18 @@ export const UnifiedPlayer: React.FC = () => {
       {/* Controls */}
       <div className="flex flex-col gap-6">
           <div className="flex items-center justify-between px-2">
-              <button className="text-neutral-400 hover:text-white transition-colors" data-testid="player-skip-prev">
+              <button className="text-tps-muted hover:text-white transition-colors" data-testid="player-skip-prev">
                   <PrevIcon />
               </button>
               
               <button 
-                className="w-16 h-16 rounded-full bg-white text-black flex items-center justify-center hover:scale-105 transition-transform shadow-lg shadow-white/10"
+                className="w-16 h-16 rounded-full bg-white text-tps-charcoal flex items-center justify-center hover:scale-105 transition-transform shadow-[0_0_20px_rgba(255,255,255,0.2)]"
                 data-testid="player-play-pause"
               >
                  {isPlaying ? <PauseIcon /> : <PlayIcon />}
               </button>
 
-              <button className="text-neutral-400 hover:text-white transition-colors" data-testid="player-skip-next">
+              <button className="text-tps-muted hover:text-white transition-colors" data-testid="player-skip-next">
                   <SkipIcon />
               </button>
           </div>
@@ -95,14 +95,14 @@ export const UnifiedPlayer: React.FC = () => {
               <button 
                 className={`flex items-center gap-2 px-4 py-1.5 rounded-full border text-xs font-bold tracking-wider uppercase transition-all ${
                     isLossless 
-                    ? 'border-tps-blue/50 text-tps-blue bg-tps-blue/10 shadow-[0_0_15px_-3px_rgba(59,130,246,0.3)]' 
-                    : 'border-white/10 text-neutral-500 hover:border-white/30'
+                    ? 'border-tps-cyan/50 text-tps-cyan bg-tps-cyan/10 shadow-[0_0_15px_-3px_rgba(64,224,255,0.3)]' 
+                    : 'border-white/10 text-tps-muted hover:border-white/30'
                 }`}
                 data-testid="player-lossless-toggle"
               >
                   <span>Lossless</span>
                   {isLossless && (
-                      <span className="w-1.5 h-1.5 rounded-full bg-tps-blue shadow-[0_0_5px_currentColor]" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-tps-cyan shadow-[0_0_5px_currentColor]" />
                   )}
               </button>
           </div>

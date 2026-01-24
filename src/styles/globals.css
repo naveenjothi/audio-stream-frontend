@@ -47,16 +47,38 @@
 
   /* Dark theme (default) */
   .dark body {
-    @apply bg-[#050507] text-white antialiased font-sans selection:bg-primary-500/30 selection:text-primary-200;
+    @apply bg-tps-charcoal text-white antialiased font-sans;
     background-image: 
       radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.15), transparent 40%),
       radial-gradient(circle at 0% 50%, rgba(59, 130, 246, 0.1), transparent 40%);
     background-attachment: fixed;
   }
+  
+  .dark ::selection {
+      @apply bg-tps-cyan/30 text-white;
+  }
 
   /* Light theme */
+  body {
+    @apply bg-white text-zinc-900;
+  }
   .light body {
     @apply bg-gray-50 text-zinc-900 antialiased font-sans;
+  }
+
+  /* Custom Scrollbar for Chrome/Safari/Edge */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-tps-charcoal;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-tps-surface rounded-full hover:bg-zinc-700/50 transition-colors;
+  }
+
+  ::selection {
+    @apply bg-tps-cyan/30 text-white;
   }
 
   /* Scrollbar - Dark theme */
