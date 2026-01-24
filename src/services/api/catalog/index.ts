@@ -5,3 +5,4 @@ export * from "./playlists";
 export * from "./users";
 export * from "./favorites";
 export * from "./dashboard";
+export * from "./playback";

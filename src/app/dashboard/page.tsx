@@ -20,12 +20,11 @@ import {
   Database,
 } from "lucide-react";
 import { AuthGuard, useAuth } from "@/components/auth";
-import { SongList } from "@/components/songs";
-import { Loading, useToast } from "@/components/shared";
+import { Loading, useToast, SongCardSkeleton, DashboardStatsSkeleton, Skeleton, TopArtistsSkeleton } from "@/components/shared";
 import { useDeviceStore, usePlayerStore, useThemeStore } from "@/store";
 import {
   getSongs,
-  getPairedDevice,
+  getActivePairing,
   getDashboardStats,
   getFavorites,
   likeSong,
@@ -48,50 +47,6 @@ interface Song {
   albumArt?: string;
   filePath: string;
 }
-
-// Demo songs
-const demoSongs: Song[] = [
-  {
-    id: "demo-1",
-    title: "Midnight Dreams",
-    artist: "Luna Wave",
-    album: "Nocturnal",
-    duration: 234000,
-    albumArt:
-      "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=100&h=100&fit=crop",
-    filePath: "",
-  },
-  {
-    id: "demo-2",
-    title: "Electric Pulse",
-    artist: "Neon Circuits",
-    album: "Digital Age",
-    duration: 198000,
-    albumArt:
-      "https://images.unsplash.com/photo-1571330735066-03aaa9429d89?w=100&h=100&fit=crop",
-    filePath: "",
-  },
-  {
-    id: "demo-3",
-    title: "Ocean Waves",
-    artist: "Coastal Vibes",
-    album: "Serenity",
-    duration: 267000,
-    albumArt:
-      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=100&h=100&fit=crop",
-    filePath: "",
-  },
-  {
-    id: "demo-4",
-    title: "Urban Jungle",
-    artist: "Metro Beats",
-    album: "City Lights",
-    duration: 212000,
-    albumArt:
-      "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=100&h=100&fit=crop",
-    filePath: "",
-  },
-];
 
 export default function DashboardPage() {
   const [songs, setSongs] = useState<Song[]>([]);
@@ -138,11 +93,15 @@ export default function DashboardPage() {
         })));
       }
 
-      // Fetch paired device
-      const device = await getPairedDevice();
-      if (device) {
-        setPairedDevice(device);
-        setConnectionStatus("connected");
+      // Fetch active pairing
+      try {
+        const activePairing = await getActivePairing();
+        if (activePairing && activePairing.mobile_device) {
+          setPairedDevice(activePairing.mobile_device);
+          setConnectionStatus("connected");
+        }
+      } catch (e) {
+        console.log("No active pairing found");
       }
 
       // Fetch songs from new API
@@ -160,11 +119,11 @@ export default function DashboardPage() {
         }));
         setSongs([...mappedSongs]);
       } else {
-        setSongs(demoSongs);
+        setSongs([]);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
-      setSongs(demoSongs);
+      setSongs([]);
     } finally {
       setIsLoadingSongs(false);
     }
@@ -351,7 +310,9 @@ export default function DashboardPage() {
 
             {/* Quick Stats */}
             <div className="grid grid-cols-2 gap-4 lg:col-span-1">
-                 {[
+                 {!stats ? (
+                    <DashboardStatsSkeleton />
+                 ) : [
                     { icon: Music, label: "Songs", value: stats?.total_songs || songs.length, color: "text-tps-cyan" },
                     { icon: Play, label: "Plays", value: stats?.total_plays || 0, color: "text-tps-lilac" },
                     { icon: Clock, label: "Hours", value: stats?.total_hours ? `${stats.total_hours.toFixed(1)}h` : "0h", color: "text-emerald-400" },
@@ -385,7 +346,9 @@ export default function DashboardPage() {
                     Top Artists
                 </h3>
                 <div className="space-y-4">
-                    {stats?.top_artists?.length > 0 ? (
+                    {!stats ? (
+                        <TopArtistsSkeleton />
+                    ) : stats?.top_artists?.length > 0 ? (
                         stats.top_artists.map((artist: any, i: number) => (
                             <div key={artist.artist_id} className="flex items-center justify-between">
                                 <div className="flex items-center gap-3">
@@ -451,8 +414,12 @@ export default function DashboardPage() {
             </div>
 
             {isLoadingSongs ? (
-              <Loading text="Loading your library..." />
-            ) : (
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                {Array.from({ length: 6 }).map((_, i) => (
+                    <SongCardSkeleton key={i} />
+                ))}
+              </div>
+            ) : (stats?.recently_added?.length > 0 || songs.length > 0) ? (
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
                 {(stats?.recently_added?.length > 0 ? stats.recently_added : songs.slice(0, 6)).map((apiSong: any, index: number) => {
                   const song = stats?.recently_added?.length > 0 ? {
@@ -477,6 +444,21 @@ export default function DashboardPage() {
                     />
                   );
                 })}
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center py-12 px-4 rounded-3xl bg-white/5 border border-dashed border-white/10">
+                <div className="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center mb-4">
+                  <Music className="w-8 h-8 text-tps-muted" />
+                </div>
+                <h3 className="text-lg font-bold text-white mb-2">No songs found</h3>
+                <p className="text-tps-muted text-center max-w-xs text-sm mb-6">
+                  Sync your mobile device or add songs to your library to start streaming in high fidelity.
+                </p>
+                <Link href="/pair">
+                  <button className="px-6 py-2 rounded-full bg-white/10 hover:bg-white/15 text-white text-sm font-semibold transition-colors border border-white/10">
+                    Pair Device
+                  </button>
+                </Link>
               </div>
             )}
           </motion.section>

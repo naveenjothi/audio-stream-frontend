@@ -40,3 +40,13 @@ export async function connectWithPairCode(
   );
   return extractData(response);
 }
+
+/**
+ * Get the current active pairing for the user
+ */
+export async function getActivePairing(): Promise<DevicePairing> {
+  const response = await signalingClient.get<{ data: DevicePairing }>(
+    "/v1/pairing/active"
+  );
+  return extractData(response);
+}

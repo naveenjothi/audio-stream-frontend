@@ -6,6 +6,7 @@ import { SongListItem } from "./SongListItem";
 import { usePlayerStore } from "@/store";
 import type { Song } from "@/types";
 import clsx from "clsx";
+import { SongSkeleton } from "../shared";
 
 interface SongListProps {
   songs: Song[];
@@ -37,9 +38,10 @@ export function SongList({
 
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center py-12">
-        <Loader2 className="w-8 h-8 text-primary-500 animate-spin" />
-        <p className="mt-4 text-dark-400">Loading songs...</p>
+      <div className="space-y-1">
+        {Array.from({ length: 10 }).map((_, i) => (
+          <SongSkeleton key={i} />
+        ))}
       </div>
     );
   }

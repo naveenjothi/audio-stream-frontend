@@ -122,6 +122,8 @@ export interface DevicePairing {
   pair_code: string;
   status: "pending" | "paired" | "expired";
   expires_at: string;
+  mobile_device?: Device;
+  browser_device?: Device;
 }
 
 // ============== Request/Response Types ==============
