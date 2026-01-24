@@ -72,7 +72,10 @@ const config: Config = {
   				'3': 'hsl(var(--chart-3))',
   				'4': 'hsl(var(--chart-4))',
   				'5': 'hsl(var(--chart-5))'
-  			}
+  			},
+            // TPS Brand Colors
+            'tps-charcoal': '#121212',
+            'tps-blue': '#3B82F6',
   		},
   		fontFamily: {
   			sans: [
