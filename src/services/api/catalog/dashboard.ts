@@ -1,24 +1,10 @@
 import { catalogClient, extractData } from "../client";
-import { Song } from "@/types/api";
-
-export interface ArtistStat {
-  name: string;
-  play_count: number;
-  artist_id: string;
-}
-
-export interface DashboardStats {
-  total_plays: number;
-  total_hours: number;
-  total_songs: number;
-  storage_saved_mb: number;
-  top_artists: ArtistStat[];
-  recent_plays: Song[];
-  recently_added: Song[];
-}
+import type { DashboardStats } from "@/types/api";
 
 export async function getDashboardStats(): Promise<DashboardStats> {
-  const response = await catalogClient.get<{ data: DashboardStats }>("/api/v1/dashboard/stats");
+  const response = await catalogClient.get<{ data: DashboardStats }>(
+    "/api/v1/dashboard/stats",
+  );
   return extractData(response);
 }
 

@@ -17,7 +17,7 @@ import {
   FullscreenPlayer,
   DeviceStatus,
 } from "@/components/player";
-import { usePlayerStore, useDeviceStore, useThemeStore } from "@/store";
+import { usePlayerStore, useDeviceStore } from "@/store";
 import { getWebRTCManager, destroyWebRTCManager } from "@/lib/webrtc";
 import { generateBrowserDeviceId, cn } from "@/lib/utils";
 import { motion } from "framer-motion";
@@ -96,19 +96,19 @@ function formatDuration(ms: number) {
 
 export default function PlayerPage() {
   const [audioStream, setAudioStream] = useState<MediaStream | null>(null);
-  const [rtcState, setRtcState] = useState<RTCPeerConnectionState>("new");
+  const [, setRtcState] = useState<RTCPeerConnectionState>("new");
   const [currentTrackIndex, setCurrentTrackIndex] = useState<number | null>(
-    null
+    null,
   );
   const [isFullscreenOpen, setIsFullscreenOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [songs] = useState<Song[]>(demoSongs);
 
   const rtcManagerRef = useRef<ReturnType<typeof getWebRTCManager> | null>(
-    null
+    null,
   );
 
-  const { queue, setQueue } = usePlayerStore();
+  const { setQueue } = usePlayerStore();
   const { pairedDevice, connectionStatus, setConnectionStatus } =
     useDeviceStore();
 
@@ -117,7 +117,7 @@ export default function PlayerPage() {
     (song) =>
       song.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       song.artist?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      song.album?.toLowerCase().includes(searchQuery.toLowerCase())
+      song.album?.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   const currentTrack =
@@ -199,9 +199,6 @@ export default function PlayerPage() {
     handleNext();
   };
 
-  const { resolvedTheme } = useThemeStore();
-  const isDark = resolvedTheme === "dark";
-
   return (
     <AuthGuard>
       <div className="min-h-screen pb-28 transition-colors duration-300 bg-tps-charcoal text-white">
@@ -219,7 +216,9 @@ export default function PlayerPage() {
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-tps-cyan to-tps-lilac flex items-center justify-center shadow-lg shadow-tps-cyan/20">
                   <Disc3 className="w-6 h-6 text-white" />
                 </div>
-                <h1 className="text-xl font-bold hidden sm:block tracking-tight">TPS</h1>
+                <h1 className="text-xl font-bold hidden sm:block tracking-tight">
+                  TPS
+                </h1>
               </div>
 
               {/* Search bar */}
@@ -268,8 +267,8 @@ export default function PlayerPage() {
               className="mb-8 p-6 rounded-tps border border-white/5 cursor-pointer bg-gradient-to-r from-tps-surface to-tps-charcoal relative overflow-hidden group shadow-2xl"
               onClick={() => setIsFullscreenOpen(true)}
             >
-               <div className="absolute inset-0 bg-gradient-to-r from-tps-cyan/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-               
+              <div className="absolute inset-0 bg-gradient-to-r from-tps-cyan/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
               <div className="relative z-10 flex items-center gap-6">
                 <div className="relative w-24 h-24 md:w-32 md:h-32 rounded-2xl overflow-hidden shadow-md flex-shrink-0 border border-white/5 group-hover:scale-105 transition-transform duration-500">
                   {currentTrack.albumArt ? (
@@ -332,7 +331,7 @@ export default function PlayerPage() {
                     "group grid grid-cols-[4fr_1fr] md:grid-cols-[16px_4fr_3fr_1fr_40px] gap-4 px-4 py-3 rounded-xl cursor-pointer transition-all border border-transparent",
                     currentTrackIndex === index
                       ? "bg-tps-surface border-tps-cyan/20 shadow-[0_0_15px_-5px_rgba(64,224,255,0.1)]"
-                      : "hover:bg-white/5 hover:border-white/5"
+                      : "hover:bg-white/5 hover:border-white/5",
                   )}
                 >
                   {/* Number / Play icon */}
@@ -383,7 +382,9 @@ export default function PlayerPage() {
                       <p
                         className={cn(
                           "font-medium truncate",
-                          currentTrackIndex === index ? "text-tps-cyan" : "text-white group-hover:text-tps-cyan transition-colors"
+                          currentTrackIndex === index
+                            ? "text-tps-cyan"
+                            : "text-white group-hover:text-tps-cyan transition-colors",
                         )}
                       >
                         {song.title}
@@ -424,9 +425,7 @@ export default function PlayerPage() {
             {filteredSongs.length === 0 && (
               <div className="text-center py-16">
                 <Disc3 className="w-16 h-16 mx-auto mb-4 text-tps-surface" />
-                <p className="text-tps-muted">
-                  No songs found
-                </p>
+                <p className="text-tps-muted">No songs found</p>
                 {searchQuery && (
                   <p className="text-sm mt-1 text-tps-muted/80">
                     Try a different search term
@@ -477,8 +476,8 @@ export default function PlayerPage() {
             connectionStatus === "connected"
               ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
               : connectionStatus === "connecting"
-              ? "bg-yellow-500/10 text-yellow-400 border-yellow-500/20"
-              : "bg-red-500/10 text-red-400 border-red-500/20"
+                ? "bg-yellow-500/10 text-yellow-400 border-yellow-500/20"
+                : "bg-red-500/10 text-red-400 border-red-500/20",
           )}
         >
           <span
@@ -487,15 +486,15 @@ export default function PlayerPage() {
               connectionStatus === "connected"
                 ? "bg-emerald-500"
                 : connectionStatus === "connecting"
-                ? "bg-yellow-500 animate-pulse"
-                : "bg-red-500"
+                  ? "bg-yellow-500 animate-pulse"
+                  : "bg-red-500",
             )}
           />
           {connectionStatus === "connected"
             ? "Connected"
             : connectionStatus === "connecting"
-            ? "Connecting..."
-            : "Disconnected"}
+              ? "Connecting..."
+              : "Disconnected"}
         </div>
       </div>
     </AuthGuard>

@@ -16,3 +16,4 @@ export {
   getWebRTCManager,
   destroyWebRTCManager,
 } from "./webrtc";
+export { cn, clamp, formatDuration, generateBrowserDeviceId } from "./utils";

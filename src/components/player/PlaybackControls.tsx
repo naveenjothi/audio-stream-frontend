@@ -1,353 +1,227 @@
 "use client";
 
-import { useRef, useState, useEffect, useCallback } from "react";
+import React from "react";
 import {
   Play,
   Pause,
   SkipBack,
   SkipForward,
-  Volume2,
-  VolumeX,
-  Volume1,
-  Repeat,
   Shuffle,
+  Repeat,
+  Repeat1,
   Loader2,
 } from "lucide-react";
-import { usePlayerStore } from "@/store";
-import { formatDuration, clamp } from "@/lib/utils";
-import clsx from "clsx";
+import { cn } from "@/lib/utils";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface PlaybackControlsProps {
-  onPlay?: () => void;
-  onPause?: () => void;
-  onSeek?: (positionMs: number) => void;
+  isPlaying?: boolean;
+  isLoading?: boolean;
+  isBuffering?: boolean;
+  onPlayPause?: () => void;
   onNext?: () => void;
   onPrevious?: () => void;
-  onVolumeChange?: (volume: number) => void;
+  shuffle?: boolean;
+  onShuffleToggle?: () => void;
+  repeatMode?: "off" | "all" | "one";
+  onRepeatToggle?: () => void;
+  canGoNext?: boolean;
+  canGoPrevious?: boolean;
+  size?: "sm" | "md" | "lg";
 }
 
 export function PlaybackControls({
-  onPlay,
-  onPause,
-  onSeek,
+  isPlaying = false,
+  isLoading = false,
+  isBuffering = false,
+  onPlayPause,
   onNext,
   onPrevious,
-  onVolumeChange,
+  shuffle = false,
+  onShuffleToggle,
+  repeatMode = "off",
+  onRepeatToggle,
+  canGoNext = true,
+  canGoPrevious = true,
+  size = "md",
 }: PlaybackControlsProps) {
-  const {
-    isPlaying,
-    currentSong,
-    positionMs,
-    durationMs,
-    volume,
-    isMuted,
-    isBuffering,
-    setPosition,
-    setVolume,
-    setMuted,
-    togglePlay,
-    nextTrack,
-    previousTrack,
-  } = usePlayerStore();
-
-  const [isDraggingSeek, setIsDraggingSeek] = useState(false);
-  const [isDraggingVolume, setIsDraggingVolume] = useState(false);
-  const [localSeekPosition, setLocalSeekPosition] = useState(positionMs);
-  const [localVolume, setLocalVolume] = useState(volume);
-  const [showVolumeSlider, setShowVolumeSlider] = useState(false);
-
-  const seekBarRef = useRef<HTMLDivElement>(null);
-  const volumeBarRef = useRef<HTMLDivElement>(null);
-
-  // Sync local state with store when not dragging
-  useEffect(() => {
-    if (!isDraggingSeek) {
-      setLocalSeekPosition(positionMs);
-    }
-  }, [positionMs, isDraggingSeek]);
-
-  useEffect(() => {
-    if (!isDraggingVolume) {
-      setLocalVolume(volume);
-    }
-  }, [volume, isDraggingVolume]);
-
-  // Handle seek bar interaction
-  const handleSeekBarInteraction = useCallback(
-    (clientX: number) => {
-      if (!seekBarRef.current || !durationMs) return;
-
-      const rect = seekBarRef.current.getBoundingClientRect();
-      const ratio = clamp((clientX - rect.left) / rect.width, 0, 1);
-      const newPosition = Math.floor(ratio * durationMs);
-      setLocalSeekPosition(newPosition);
-      return newPosition;
-    },
-    [durationMs]
-  );
-
-  const handleSeekMouseDown = (e: React.MouseEvent) => {
-    setIsDraggingSeek(true);
-    handleSeekBarInteraction(e.clientX);
+  const getRepeatIcon = () => {
+    if (repeatMode === "one") return <Repeat1 className="w-4 h-4" />;
+    return <Repeat className="w-4 h-4" />;
   };
 
-  useEffect(() => {
-    if (!isDraggingSeek) return;
-
-    const handleMouseMove = (e: MouseEvent) => {
-      handleSeekBarInteraction(e.clientX);
-    };
-
-    const handleMouseUp = () => {
-      setIsDraggingSeek(false);
-      setPosition(localSeekPosition);
-      onSeek?.(localSeekPosition);
-    };
-
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
-
-    return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
-    };
-  }, [
-    isDraggingSeek,
-    localSeekPosition,
-    handleSeekBarInteraction,
-    setPosition,
-    onSeek,
-  ]);
-
-  // Handle volume bar interaction
-  const handleVolumeBarInteraction = useCallback((clientX: number) => {
-    if (!volumeBarRef.current) return;
-
-    const rect = volumeBarRef.current.getBoundingClientRect();
-    const ratio = clamp((clientX - rect.left) / rect.width, 0, 1);
-    setLocalVolume(ratio);
-    return ratio;
-  }, []);
-
-  const handleVolumeMouseDown = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setIsDraggingVolume(true);
-    handleVolumeBarInteraction(e.clientX);
+  const buttonSize = {
+    sm: "w-10 h-10",
+    md: "w-14 h-14",
+    lg: "w-16 h-16",
   };
 
-  useEffect(() => {
-    if (!isDraggingVolume) return;
-
-    const handleMouseMove = (e: MouseEvent) => {
-      handleVolumeBarInteraction(e.clientX);
-    };
-
-    const handleMouseUp = () => {
-      setIsDraggingVolume(false);
-      setVolume(localVolume);
-      onVolumeChange?.(localVolume);
-    };
-
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
-
-    return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
-    };
-  }, [
-    isDraggingVolume,
-    localVolume,
-    handleVolumeBarInteraction,
-    setVolume,
-    onVolumeChange,
-  ]);
-
-  const handlePlayPause = () => {
-    togglePlay();
-    if (isPlaying) {
-      onPause?.();
-    } else {
-      onPlay?.();
-    }
+  const iconSize = {
+    sm: "w-5 h-5",
+    md: "w-6 h-6",
+    lg: "w-7 h-7",
   };
-
-  const handleNextTrack = () => {
-    nextTrack();
-    onNext?.();
-  };
-
-  const handlePreviousTrack = () => {
-    previousTrack();
-    onPrevious?.();
-  };
-
-  const handleToggleMute = () => {
-    if (isMuted) {
-      setMuted(false);
-      setVolume(localVolume || 0.5);
-    } else {
-      setMuted(true);
-      setVolume(0);
-    }
-  };
-
-  const getVolumeIcon = () => {
-    if (isMuted || localVolume === 0) {
-      return <VolumeX className="w-5 h-5" />;
-    }
-    if (localVolume < 0.5) {
-      return <Volume1 className="w-5 h-5" />;
-    }
-    return <Volume2 className="w-5 h-5" />;
-  };
-
-  const progress = durationMs > 0 ? (localSeekPosition / durationMs) * 100 : 0;
 
   return (
-    <div className="w-full space-y-4">
-      {/* Progress / Seek Bar */}
-      <div className="space-y-2">
-        <div
-          ref={seekBarRef}
-          className="relative h-2 bg-dark-700 rounded-full cursor-pointer group"
-          onMouseDown={handleSeekMouseDown}
-        >
-          {/* Buffering indicator */}
-          {isBuffering && (
-            <div className="absolute inset-0 overflow-hidden rounded-full">
-              <div className="w-1/3 h-full bg-dark-600 animate-pulse" />
-            </div>
+    <div className="flex items-center justify-center gap-4">
+      {/* Shuffle */}
+      {onShuffleToggle && (
+        <button
+          onClick={onShuffleToggle}
+          className={cn(
+            "p-2 rounded-full transition-all duration-300 relative group",
+            shuffle
+              ? "text-primary-500 shadow-[0_0_10px_rgba(16,185,129,0.2)]"
+              : "text-zinc-400 hover:text-white",
           )}
-
-          {/* Progress fill */}
-          <div
-            className="absolute h-full bg-primary-500 rounded-full transition-all"
-            style={{ width: `${progress}%` }}
-          />
-
-          {/* Seek handle */}
-          <div
-            className={clsx(
-              "absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-white rounded-full shadow-lg transition-opacity",
-              isDraggingSeek
-                ? "opacity-100 scale-110"
-                : "opacity-0 group-hover:opacity-100"
+        >
+          <Shuffle
+            className={cn(
+              "w-4 h-4 transition-transform duration-300",
+              shuffle && "scale-110",
             )}
-            style={{ left: `calc(${progress}% - 8px)` }}
           />
-        </div>
-
-        {/* Time display */}
-        <div className="flex justify-between text-xs text-dark-400">
-          <span>{formatDuration(localSeekPosition)}</span>
-          <span>{formatDuration(durationMs)}</span>
-        </div>
-      </div>
-
-      {/* Main Controls */}
-      <div className="flex items-center justify-center gap-6">
-        {/* Shuffle */}
-        <button
-          className="btn-ghost p-2 text-dark-400 hover:text-white"
-          aria-label="Shuffle"
-        >
-          <Shuffle className="w-5 h-5" />
-        </button>
-
-        {/* Previous */}
-        <button
-          onClick={handlePreviousTrack}
-          className="btn-ghost p-2 text-white hover:scale-105"
-          aria-label="Previous track"
-          disabled={!currentSong}
-        >
-          <SkipBack className="w-6 h-6 fill-current" />
-        </button>
-
-        {/* Play/Pause */}
-        <button
-          onClick={handlePlayPause}
-          disabled={!currentSong || isBuffering}
-          className={clsx(
-            "w-14 h-14 rounded-full flex items-center justify-center transition-all",
-            currentSong
-              ? "bg-white text-dark-950 hover:scale-105 hover:bg-white/90"
-              : "bg-dark-700 text-dark-500 cursor-not-allowed"
+          {shuffle && (
+            <span className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 bg-primary-500 rounded-full shadow-[0_0_5px_#10b981]" />
           )}
-          aria-label={isPlaying ? "Pause" : "Play"}
-        >
-          {isBuffering ? (
-            <Loader2 className="w-7 h-7 animate-spin" />
-          ) : isPlaying ? (
-            <Pause className="w-7 h-7 fill-current" />
-          ) : (
-            <Play className="w-7 h-7 fill-current ml-1" />
-          )}
+          <div className="absolute inset-0 bg-white/5 rounded-full scale-0 group-hover:scale-100 transition-transform duration-300" />
         </button>
+      )}
 
-        {/* Next */}
-        <button
-          onClick={handleNextTrack}
-          className="btn-ghost p-2 text-white hover:scale-105"
-          aria-label="Next track"
-          disabled={!currentSong}
-        >
-          <SkipForward className="w-6 h-6 fill-current" />
-        </button>
+      {/* Previous */}
+      <button
+        onClick={onPrevious}
+        disabled={!canGoPrevious}
+        className={cn(
+          "p-2 rounded-full transition-all duration-300 group relative",
+          "text-zinc-400 hover:text-white hover:scale-110 active:scale-95",
+          !canGoPrevious && "opacity-30 cursor-not-allowed hover:scale-100",
+        )}
+      >
+        <SkipBack className="w-5 h-5 fill-current relative z-10" />
+        <div className="absolute inset-0 bg-white/5 rounded-full scale-0 group-hover:scale-100 transition-transform duration-300" />
+      </button>
 
-        {/* Repeat */}
-        <button
-          className="btn-ghost p-2 text-dark-400 hover:text-white"
-          aria-label="Repeat"
-        >
-          <Repeat className="w-5 h-5" />
-        </button>
-      </div>
-
-      {/* Volume Control */}
-      <div
-        className="flex items-center justify-center gap-3"
-        onMouseEnter={() => setShowVolumeSlider(true)}
-        onMouseLeave={() => !isDraggingVolume && setShowVolumeSlider(false)}
+      {/* Play/Pause - Main button */}
+      <motion.div
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        className="relative"
       >
         <button
-          onClick={handleToggleMute}
-          className="btn-ghost p-2 text-dark-400 hover:text-white"
-          aria-label={isMuted ? "Unmute" : "Mute"}
+          onClick={onPlayPause}
+          disabled={isLoading}
+          className={cn(
+            "relative rounded-full flex items-center justify-center overflow-hidden group",
+            "bg-white text-black shadow-[0_0_20px_rgba(255,255,255,0.3)]",
+            "hover:shadow-[0_0_30px_rgba(255,255,255,0.5)] transition-all duration-300",
+            isLoading && "cursor-wait",
+            buttonSize[size],
+          )}
         >
-          {getVolumeIcon()}
+          <div className="absolute inset-0 bg-gradient-to-tr from-zinc-200 to-white opacity-100 group-hover:opacity-90 transition-opacity" />
+
+          <AnimatePresence mode="wait">
+            {isLoading || isBuffering ? (
+              <motion.div
+                key="loading"
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.5 }}
+                transition={{ duration: 0.15 }}
+                className="relative z-10"
+              >
+                <Loader2 className={cn(iconSize[size], "animate-spin")} />
+              </motion.div>
+            ) : isPlaying ? (
+              <motion.div
+                key="pause"
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.5 }}
+                transition={{ duration: 0.15 }}
+                className="relative z-10"
+              >
+                <Pause className={cn(iconSize[size], "fill-current")} />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="play"
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.5 }}
+                transition={{ duration: 0.15 }}
+                className="relative z-10"
+              >
+                <Play className={cn(iconSize[size], "fill-current ml-1")} />
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Buffering ring */}
+          {isBuffering && (
+            <div className="absolute inset-0 rounded-full">
+              <svg className="w-full h-full -rotate-90" viewBox="0 0 56 56">
+                <circle
+                  cx="28"
+                  cy="28"
+                  r="26"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeDasharray="163.36"
+                  strokeDashoffset="122.52"
+                  className="text-primary-500 animate-spin origin-center"
+                  style={{ animationDuration: "1s" }}
+                />
+              </svg>
+            </div>
+          )}
         </button>
 
-        <div
-          className={clsx(
-            "w-24 transition-all duration-200",
-            showVolumeSlider || isDraggingVolume
-              ? "opacity-100"
-              : "opacity-0 w-0"
+        {/* Glow effect behind play button */}
+        <div className="absolute inset-0 bg-white/50 blur-xl rounded-full -z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      </motion.div>
+
+      {/* Next */}
+      <button
+        onClick={onNext}
+        disabled={!canGoNext}
+        className={cn(
+          "p-2 rounded-full transition-all duration-300 group relative",
+          "text-zinc-400 hover:text-white hover:scale-110 active:scale-95",
+          !canGoNext && "opacity-30 cursor-not-allowed hover:scale-100",
+        )}
+      >
+        <SkipForward className="w-5 h-5 fill-current relative z-10" />
+        <div className="absolute inset-0 bg-white/5 rounded-full scale-0 group-hover:scale-100 transition-transform duration-300" />
+      </button>
+
+      {/* Repeat */}
+      {onRepeatToggle && (
+        <button
+          onClick={onRepeatToggle}
+          className={cn(
+            "p-2 rounded-full transition-all duration-300 relative group",
+            repeatMode !== "off"
+              ? "text-primary-500 shadow-[0_0_10px_rgba(16,185,129,0.2)]"
+              : "text-zinc-400 hover:text-white",
           )}
         >
           <div
-            ref={volumeBarRef}
-            className="relative h-1.5 bg-dark-700 rounded-full cursor-pointer group"
-            onMouseDown={handleVolumeMouseDown}
+            className={cn(
+              "transition-transform duration-300",
+              repeatMode !== "off" && "scale-110",
+            )}
           >
-            <div
-              className="absolute h-full bg-white rounded-full"
-              style={{ width: `${localVolume * 100}%` }}
-            />
-            <div
-              className={clsx(
-                "absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full shadow transition-opacity",
-                isDraggingVolume
-                  ? "opacity-100"
-                  : "opacity-0 group-hover:opacity-100"
-              )}
-              style={{ left: `calc(${localVolume * 100}% - 6px)` }}
-            />
+            {getRepeatIcon()}
           </div>
-        </div>
-      </div>
+          {repeatMode !== "off" && (
+            <span className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 bg-primary-500 rounded-full shadow-[0_0_5px_#10b981]" />
+          )}
+          <div className="absolute inset-0 bg-white/5 rounded-full scale-0 group-hover:scale-100 transition-transform duration-300" />
+        </button>
+      )}
     </div>
   );
 }

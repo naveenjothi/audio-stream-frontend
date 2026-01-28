@@ -11,14 +11,14 @@ interface DeviceState {
   setIsPairing: (isPairing: boolean) => void;
   setPairingError: (error: string | null) => void;
   setConnectionStatus: (
-    status: "disconnected" | "connecting" | "connected"
+    status: "disconnected" | "connecting" | "connected",
   ) => void;
   clearDevice: () => void;
 }
 
 export const useDeviceStore = create<DeviceState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       pairedDevice: null,
       isPairing: false,
       pairingError: null,
@@ -44,6 +44,6 @@ export const useDeviceStore = create<DeviceState>()(
       partialize: (state) => ({
         pairedDevice: state.pairedDevice,
       }),
-    }
-  )
+    },
+  ),
 );

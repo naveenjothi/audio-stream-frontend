@@ -6,13 +6,12 @@ import { AlertCircle } from "lucide-react";
 import { logOut, signInWithGoogle } from "@/lib/firebase";
 import { createUser, getUserByFirebaseId } from "@/services/api/catalog";
 import { FuturisticCard, GlowButton, useToast } from "@/components/shared";
-import {  User } from "firebase/auth";
+import { User } from "firebase/auth";
 
-function LoginFormContent({ redirect }: { redirect: string }) { 
+function LoginFormContent({ redirect }: { redirect: string }) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { addToast } = useToast();
-
   const router = useRouter();
 
   const createDbUserIfNotExists = async (user: User): Promise<boolean> => {
@@ -22,7 +21,7 @@ function LoginFormContent({ redirect }: { redirect: string }) {
         const nameParts = user.displayName?.split(" ") || [];
         const firstName = nameParts[0] || "";
         const lastName = nameParts.slice(1).join(" ") || "";
-  
+
         await createUser({
           email: user.email ?? undefined,
           firebase_id: user.uid,
@@ -62,7 +61,10 @@ function LoginFormContent({ redirect }: { redirect: string }) {
   };
 
   return (
-    <FuturisticCard variant="glass" className="w-full max-w-md p-8 animate-float">
+    <FuturisticCard
+      variant="glass"
+      className="w-full max-w-md p-8 animate-float"
+    >
       {/* Error Alert */}
       {error && (
         <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 flex items-start gap-3 animate-pulse-slow">

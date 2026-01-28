@@ -3,7 +3,7 @@
 import { useEffect, createContext, useContext, ReactNode } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuthStore } from "@/store";
-import { onAuthChange, auth } from "@/lib/firebase";
+import { onAuthChange } from "@/lib/firebase";
 import type { User } from "@/types";
 
 interface AuthContextType {

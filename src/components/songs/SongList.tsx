@@ -1,11 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Music, Search, Loader2 } from "lucide-react";
+import { Music, Search } from "lucide-react";
 import { SongListItem } from "./SongListItem";
 import { usePlayerStore } from "@/store";
 import type { Song } from "@/types";
-import clsx from "clsx";
 import { SongSkeleton } from "../shared";
 
 interface SongListProps {

@@ -2,10 +2,9 @@
 
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { ListMusic, Maximize2, MonitorSpeaker } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { SeekBar } from "./SeekBar";
 import { VolumeControl } from "./VolumeControl";
-import { PlaybackControls } from "./NewPlaybackControls";
+import { PlaybackControls } from "./PlaybackControls";
 import { TrackInfo } from "./TrackInfo";
 import type { Song } from "@/types";
 
@@ -171,7 +170,7 @@ export function NowPlayingBar({
       {/* Floating Glass Bar */}
       <div className="glass-panel rounded-2xl overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.5)] border border-white/10">
         {/* Progress Bar Glow */}
-        <div 
+        <div
           className="absolute top-0 left-0 h-[2px] bg-primary-500 shadow-[0_0_10px_rgba(16,185,129,0.5)] transition-all duration-100 ease-linear z-10"
           style={{ width: `${(currentTime / trackDuration) * 100}%` }}
         />

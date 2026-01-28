@@ -1,4 +1,5 @@
 // Type definitions for the application
+// Note: API-specific types are in ./api.ts
 
 export interface User {
   uid: string;
@@ -58,12 +59,6 @@ export interface PlaybackEvent {
   songId?: string;
   positionMs?: number;
   level?: number;
-}
-
-export interface ApiResponse<T> {
-  data: T;
-  error?: string;
-  message?: string;
 }
 
 export interface PairRequest {

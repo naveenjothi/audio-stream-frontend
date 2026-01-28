@@ -14,18 +14,28 @@ export function ToastProvider({ children }: { children: ReactNode }) {
 }
 
 export function useToast() {
-  const { toast } = useShadcnToast();
+  const { toast, dismiss } = useShadcnToast();
 
-  const addToast = (message: string, type: "success" | "error" | "info" | "warning" = "info", duration = 5000) => {
+  const addToast = (
+    message: string,
+    type: "success" | "error" | "info" | "warning" = "info",
+    duration = 5000,
+  ) => {
     const variant = type === "error" ? "destructive" : "default";
     // Map types to variants or styles if needed. Shadcn default toast is simple.
     // We can use 'className' to style based on type if we want to keep colors.
-    
+
     let className = "";
-    if (type === "success") className = "bg-green-500/10 border-green-500/20 text-green-900 dark:text-green-100";
-    if (type === "warning") className = "bg-yellow-500/10 border-yellow-500/20 text-yellow-900 dark:text-yellow-100";
-    if (type === "info") className = "bg-blue-500/10 border-blue-500/20 text-blue-900 dark:text-blue-100";
-    
+    if (type === "success")
+      className =
+        "bg-green-500/10 border-green-500/20 text-green-900 dark:text-green-100";
+    if (type === "warning")
+      className =
+        "bg-yellow-500/10 border-yellow-500/20 text-yellow-900 dark:text-yellow-100";
+    if (type === "info")
+      className =
+        "bg-blue-500/10 border-blue-500/20 text-blue-900 dark:text-blue-100";
+
     toast({
       description: message,
       variant: variant,
@@ -35,11 +45,6 @@ export function useToast() {
   };
 
   const removeToast = (id: string) => {
-    // Shadcn toast returns an object with dismiss(), but here we don't have the ID easily mapped 
-    // unless we store the return value of toast(). 
-    // For now, we might ignore removeToast or implement a more complex wrapper if needed.
-    // Most usages probably just fire and forget.
-    const { dismiss } = useShadcnToast();
     dismiss(id);
   };
 

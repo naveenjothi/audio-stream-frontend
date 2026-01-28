@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { SeekBar } from "./SeekBar";
 import { VolumeControl } from "./VolumeControl";
-import { PlaybackControls } from "./NewPlaybackControls";
+import { PlaybackControls } from "./PlaybackControls";
 import type { Song } from "@/types";
 
 interface FullscreenPlayerProps {
@@ -242,7 +242,7 @@ export function FullscreenPlayer({
                       <Disc3
                         className={cn(
                           "w-32 h-32 text-zinc-600",
-                          isPlaying && "animate-spin-slow"
+                          isPlaying && "animate-spin-slow",
                         )}
                       />
                     </div>
@@ -268,7 +268,7 @@ export function FullscreenPlayer({
                       "p-3 rounded-full transition-all",
                       isLiked
                         ? "text-primary-500"
-                        : "text-zinc-400 hover:text-white"
+                        : "text-zinc-400 hover:text-white",
                     )}
                   >
                     <Heart

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import { AuthGuard } from "@/components/auth";
 import { useToast } from "@/components/shared";
-import { useDeviceStore, useAuthStore } from "@/store";
+import { useDeviceStore } from "@/store";
 import { connectWithPairCode, registerDevice } from "@/services/api/signaling";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
@@ -33,12 +33,8 @@ export default function PairPage() {
 
   const router = useRouter();
   const { addToast } = useToast();
-  const {
-    setPairedDevice,
-    setIsPairing,
-    setPairingError,
-    setConnectionStatus,
-  } = useDeviceStore();
+  const { setIsPairing, setPairingError, setConnectionStatus } =
+    useDeviceStore();
 
   const handleCodeChange = (index: number, value: string) => {
     // Only allow numbers
@@ -111,7 +107,7 @@ export default function PairPage() {
         setErrorMessage("Pairing failed - invalid or expired code");
         setPairingError("Pairing failed");
       }
-    } catch (err) {
+    } catch {
       setStatus("error");
       setErrorMessage("Failed to verify code");
       setPairingError("Failed to verify code");
@@ -177,10 +173,14 @@ export default function PairPage() {
                 transition={{ type: "spring", stiffness: 200, damping: 20 }}
                 className={cn(
                   "inline-flex items-center justify-center w-24 h-24 rounded-full mb-8 transition-all shadow-xl",
-                  status === "success" && "bg-emerald-500/10 text-emerald-500 shadow-emerald-500/20",
-                  status === "error" && "bg-red-500/10 text-red-500 shadow-red-500/20",
-                  status === "verifying" && "bg-tps-cyan/10 text-tps-cyan shadow-tps-cyan/20 animate-pulse",
-                  status === "idle" && "bg-tps-surface border border-white/5 text-tps-muted"
+                  status === "success" &&
+                    "bg-emerald-500/10 text-emerald-500 shadow-emerald-500/20",
+                  status === "error" &&
+                    "bg-red-500/10 text-red-500 shadow-red-500/20",
+                  status === "verifying" &&
+                    "bg-tps-cyan/10 text-tps-cyan shadow-tps-cyan/20 animate-pulse",
+                  status === "idle" &&
+                    "bg-tps-surface border border-white/5 text-tps-muted",
                 )}
               >
                 <AnimatePresence mode="wait">
@@ -197,26 +197,26 @@ export default function PairPage() {
 
               <h1 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight">
                 {status === "success" ? (
-                    <span className="text-emerald-400">Device Connected</span>
+                  <span className="text-emerald-400">Device Connected</span>
                 ) : (
-                    <>
-                        Pair Your <span className="text-gradient">Device</span>
-                    </>
+                  <>
+                    Pair Your <span className="text-gradient">Device</span>
+                  </>
                 )}
               </h1>
               <p className="text-tps-muted text-lg">
                 {status === "success"
                   ? "Redirecting to dashboard..."
                   : status === "error"
-                  ? errorMessage
-                  : "Enter the 6-digit code shown on your mobile device"}
+                    ? errorMessage
+                    : "Enter the 6-digit code shown on your mobile device"}
               </p>
             </div>
 
             {/* Pairing card */}
             <div className="bg-tps-surface backdrop-blur-xl border border-white/5 rounded-tps p-6 sm:p-8 shadow-2xl relative overflow-hidden group">
-               {/* Subtle border gradient on hover */}
-               <div className="absolute inset-0 rounded-tps border border-white/0 group-hover:border-tps-cyan/20 transition-colors pointer-events-none" />
+              {/* Subtle border gradient on hover */}
+              <div className="absolute inset-0 rounded-tps border border-white/0 group-hover:border-tps-cyan/20 transition-colors pointer-events-none" />
 
               <AnimatePresence mode="wait">
                 {status === "success" ? (
@@ -234,7 +234,11 @@ export default function PairPage() {
                       <motion.div
                         initial={{ width: 0 }}
                         animate={{ width: 80 }}
-                        transition={{ delay: 0.3, duration: 0.6, ease: "circOut" }}
+                        transition={{
+                          delay: 0.3,
+                          duration: 0.6,
+                          ease: "circOut",
+                        }}
                         className="h-1 bg-gradient-to-r from-tps-cyan to-tps-lilac rounded-full shadow-[0_0_10px_rgba(64,224,255,0.5)]"
                       />
                       <motion.div
@@ -290,8 +294,8 @@ export default function PairPage() {
                               status === "error"
                                 ? "border-red-500/50 text-red-400 focus:ring-2 focus:ring-red-500/30"
                                 : digit
-                                ? "border-tps-cyan/50 shadow-[0_0_15px_-5px_rgba(64,224,255,0.3)]"
-                                : "focus:border-tps-cyan focus:shadow-[0_0_15px_-5px_rgba(64,224,255,0.3)] focus:ring-1 focus:ring-tps-cyan/50"
+                                  ? "border-tps-cyan/50 shadow-[0_0_15px_-5px_rgba(64,224,255,0.3)]"
+                                  : "focus:border-tps-cyan focus:shadow-[0_0_15px_-5px_rgba(64,224,255,0.3)] focus:ring-1 focus:ring-tps-cyan/50",
                             )}
                           />
                         </motion.div>
@@ -324,7 +328,9 @@ export default function PairPage() {
                       >
                         <div className="flex items-center gap-3 text-tps-cyan">
                           <Loader2 className="w-5 h-5 animate-spin" />
-                          <span className="font-medium tracking-wide">Verifying code...</span>
+                          <span className="font-medium tracking-wide">
+                            Verifying code...
+                          </span>
                         </div>
                       </motion.div>
                     )}
@@ -341,7 +347,11 @@ export default function PairPage() {
                               Step 1
                             </p>
                             <p className="text-sm text-tps-muted">
-                              Open <span className="text-tps-cyan font-medium">TPS</span> on your phone
+                              Open{" "}
+                              <span className="text-tps-cyan font-medium">
+                                TPS
+                              </span>{" "}
+                              on your phone
                             </p>
                           </div>
                         </div>
@@ -382,7 +392,9 @@ export default function PairPage() {
 
             {/* Device types */}
             <div className="mt-12 text-center">
-              <p className="text-tps-muted text-sm uppercase tracking-widest font-bold mb-6 opacity-60">Supported Devices</p>
+              <p className="text-tps-muted text-sm uppercase tracking-widest font-bold mb-6 opacity-60">
+                Supported Devices
+              </p>
               <div className="flex items-center justify-center gap-10">
                 <div className="group flex flex-col items-center gap-3 text-tps-muted hover:text-white transition-colors">
                   <div className="w-12 h-12 rounded-2xl bg-tps-surface border border-white/5 flex items-center justify-center group-hover:border-tps-cyan/30 group-hover:shadow-[0_0_15px_-5px_rgba(64,224,255,0.3)] transition-all">

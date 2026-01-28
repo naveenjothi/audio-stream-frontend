@@ -1,7 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useCallback, useEffect } from "react";
-import { cn } from "@/lib/utils";
+import React, { useState, useRef } from "react";
 import { Slider } from "@/components/ui/slider";
 
 interface SeekBarProps {
@@ -24,7 +23,6 @@ export function SeekBar({
   duration = 0,
   buffered = 0,
   onSeek,
-  isLoading = false,
 }: SeekBarProps) {
   const [hoverTime, setHoverTime] = useState<number | null>(null);
   const [hoverPosition, setHoverPosition] = useState<number | null>(null);
@@ -58,7 +56,7 @@ export function SeekBar({
         {formatTime(currentTime)}
       </span>
 
-      <div 
+      <div
         className="relative flex-1 flex items-center h-8"
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
