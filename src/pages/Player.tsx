@@ -211,7 +211,7 @@ export default function PlayerPage() {
                 >
                   <ChevronLeft className="w-5 h-5 group-hover:-translate-x-0.5 transition-transform" />
                 </Link>
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-tps-cyan to-tps-lilac flex items-center justify-center shadow-lg shadow-tps-cyan/20">
+                <div className="w-10 h-10 rounded-xl bg-linear-to-br from-tps-cyan to-tps-lilac flex items-center justify-center shadow-lg shadow-tps-cyan/20">
                   <Disc3 className="w-6 h-6 text-white" />
                 </div>
                 <h1 className="text-xl font-bold hidden sm:block tracking-tight">
@@ -262,13 +262,13 @@ export default function PlayerPage() {
             <motion.section
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mb-8 p-6 rounded-tps border border-white/5 cursor-pointer bg-gradient-to-r from-tps-surface to-tps-charcoal relative overflow-hidden group shadow-2xl"
+              className="mb-8 p-6 rounded-tps border border-white/5 cursor-pointer bg-linear-to-r from-tps-surface to-tps-charcoal relative overflow-hidden group shadow-2xl"
               onClick={() => setIsFullscreenOpen(true)}
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-tps-cyan/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="absolute inset-0 bg-linear-to-r from-tps-cyan/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
               <div className="relative z-10 flex items-center gap-6">
-                <div className="relative w-24 h-24 md:w-32 md:h-32 rounded-2xl overflow-hidden shadow-md flex-shrink-0 border border-white/5 group-hover:scale-105 transition-transform duration-500">
+                <div className="relative w-24 h-24 md:w-32 md:h-32 rounded-2xl overflow-hidden shadow-md shrink-0 border border-white/5 group-hover:scale-105 transition-transform duration-500">
                   {currentTrack.albumArt ? (
                     <img
                       src={currentTrack.albumArt}
@@ -363,7 +363,7 @@ export default function PlayerPage() {
 
                   {/* Title & Artist */}
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className="relative w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 shadow-md bg-tps-surface border border-white/5">
+                    <div className="relative w-10 h-10 rounded-lg overflow-hidden shrink-0 shadow-md bg-tps-surface border border-white/5">
                       {song.albumArt ? (
                         <img
                           src={song.albumArt}

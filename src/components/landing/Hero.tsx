@@ -6,7 +6,7 @@ export const Hero: React.FC = () => {
     <section className="relative min-h-[60vh] flex flex-col items-center justify-center text-center px-4 pt-16 pb-12 overflow-hidden">
       {/* Background Ambience */}
       <div className="absolute inset-0 bg-tps-charcoal">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-tps-cyan/5 rounded-full blur-[120px]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-125 h-125 bg-tps-cyan/5 rounded-full blur-[120px]" />
       </div>
 
       <div className="relative z-10 max-w-4xl mx-auto space-y-6">
@@ -18,7 +18,7 @@ export const Hero: React.FC = () => {
 
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white tracking-tight leading-tight">
           Your Music. Your Quality. <br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-tps-cyan to-tps-lilac">
+          <span className="text-transparent bg-clip-text bg-linear-to-r from-tps-cyan to-tps-lilac">
             No Cloud Required.
           </span>
         </h1>

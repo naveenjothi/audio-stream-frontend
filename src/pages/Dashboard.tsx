@@ -309,7 +309,7 @@ export default function DashboardPage() {
                       "px-6 py-3 rounded-full font-semibold flex items-center gap-2 transition-all shadow-lg",
                       connectedDevice
                         ? "bg-white/10 hover:bg-white/15 text-white ring-1 ring-white/10"
-                        : "bg-gradient-to-r from-tps-cyan to-blue-500 hover:shadow-tps-cyan/25 text-black border-none",
+                        : "bg-linear-to-r from-tps-cyan to-blue-500 hover:shadow-tps-cyan/25 text-black border-none",
                     )}
                   >
                     {connectedDevice ? "Manage Device" : "Connect Now"}
@@ -399,7 +399,7 @@ export default function DashboardPage() {
                         <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-xs font-bold text-tps-muted">
                           {i + 1}
                         </div>
-                        <span className="text-sm font-medium truncate max-w-[100px]">
+                        <span className="text-sm font-medium truncate max-w-25">
                           {artist.name}
                         </span>
                       </div>
@@ -577,7 +577,7 @@ function SongCard({
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-tps-surface to-black border border-white/5">
+            <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-tps-surface to-black border border-white/5">
               <Disc3 className="w-10 h-10 text-tps-muted" />
             </div>
           )}

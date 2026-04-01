@@ -138,12 +138,12 @@ export default function PairPage() {
       <div className="min-h-screen bg-tps-charcoal text-white relative flex flex-col overflow-hidden">
         {/* Background effects */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-tps-cyan/5 rounded-full blur-[120px]" />
-          <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-tps-lilac/5 rounded-full blur-[120px]" />
+          <div className="absolute top-1/4 left-1/4 w-125 h-125 bg-tps-cyan/5 rounded-full blur-[120px]" />
+          <div className="absolute bottom-1/4 right-1/4 w-125 h-125 bg-tps-lilac/5 rounded-full blur-[120px]" />
         </div>
 
         {/* Header */}
-        <header className="w-full p-6 z-20 flex-shrink-0">
+        <header className="w-full p-6 z-20 shrink-0">
           <Link
             to="/dashboard"
             className="inline-flex items-center gap-2 text-tps-muted hover:text-white transition-colors group"
@@ -156,7 +156,7 @@ export default function PairPage() {
         </header>
 
         {/* Main content */}
-        <main className="relative z-10 w-full max-w-md px-6 mx-auto flex-grow flex flex-col justify-center pb-12">
+        <main className="relative z-10 w-full max-w-md px-6 mx-auto grow flex flex-col justify-center pb-12">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -236,13 +236,13 @@ export default function PairPage() {
                           duration: 0.6,
                           ease: "circOut",
                         }}
-                        className="h-1 bg-gradient-to-r from-tps-cyan to-tps-lilac rounded-full shadow-[0_0_10px_rgba(64,224,255,0.5)]"
+                        className="h-1 bg-linear-to-r from-tps-cyan to-tps-lilac rounded-full shadow-[0_0_10px_rgba(64,224,255,0.5)]"
                       />
                       <motion.div
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
                         transition={{ delay: 0.5, type: "spring" }}
-                        className="w-20 h-20 rounded-2xl bg-gradient-to-br from-tps-cyan to-tps-lilac flex items-center justify-center shadow-lg shadow-tps-cyan/20 text-white"
+                        className="w-20 h-20 rounded-2xl bg-linear-to-br from-tps-cyan to-tps-lilac flex items-center justify-center shadow-lg shadow-tps-cyan/20 text-white"
                       >
                         <Smartphone className="w-10 h-10" />
                       </motion.div>
@@ -336,7 +336,7 @@ export default function PairPage() {
                     {status === "idle" && (
                       <div className="space-y-4">
                         <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors">
-                          <div className="w-12 h-12 rounded-xl bg-tps-charcoal flex items-center justify-center flex-shrink-0 border border-white/5">
+                          <div className="w-12 h-12 rounded-xl bg-tps-charcoal flex items-center justify-center shrink-0 border border-white/5">
                             <QrCode className="w-6 h-6 text-tps-muted" />
                           </div>
                           <div>
@@ -354,7 +354,7 @@ export default function PairPage() {
                         </div>
 
                         <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors">
-                          <div className="w-12 h-12 rounded-xl bg-tps-charcoal flex items-center justify-center flex-shrink-0 border border-white/5">
+                          <div className="w-12 h-12 rounded-xl bg-tps-charcoal flex items-center justify-center shrink-0 border border-white/5">
                             <Smartphone className="w-6 h-6 text-tps-muted" />
                           </div>
                           <div>
@@ -368,7 +368,7 @@ export default function PairPage() {
                         </div>
 
                         <div className="flex items-center gap-4 p-4 rounded-2xl bg-tps-cyan/10 border border-tps-cyan/20 hover:bg-tps-cyan/15 transition-colors">
-                          <div className="w-12 h-12 rounded-xl bg-tps-cyan text-tps-charcoal flex items-center justify-center flex-shrink-0 shadow-lg shadow-tps-cyan/20">
+                          <div className="w-12 h-12 rounded-xl bg-tps-cyan text-tps-charcoal flex items-center justify-center shrink-0 shadow-lg shadow-tps-cyan/20">
                             <Wifi className="w-6 h-6" />
                           </div>
                           <div>

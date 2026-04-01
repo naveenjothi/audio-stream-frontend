@@ -31,8 +31,8 @@ export function TrackInfo({
       {/* Album art */}
       <motion.div
         className={cn(
-          "relative w-14 h-14 rounded-lg overflow-hidden flex-shrink-0",
-          "bg-zinc-800 shadow-lg shadow-black/30"
+          "relative w-14 h-14 rounded-lg overflow-hidden shrink-0",
+          "bg-zinc-800 shadow-lg shadow-black/30",
         )}
         animate={{
           scale: isPlaying ? 1 : 0.95,
@@ -47,11 +47,11 @@ export function TrackInfo({
             className="w-full h-full object-cover"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-zinc-700 to-zinc-900">
+          <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-zinc-700 to-zinc-900">
             <Disc3
               className={cn(
                 "w-8 h-8 text-zinc-500",
-                isPlaying && "animate-spin-slow"
+                isPlaying && "animate-spin-slow",
               )}
             />
           </div>
@@ -99,7 +99,7 @@ export function TrackInfo({
             "p-2 rounded-full transition-all duration-200",
             isLiked
               ? "text-primary-500 hover:text-primary-400"
-              : "text-zinc-400 hover:text-white opacity-0 group-hover:opacity-100"
+              : "text-zinc-400 hover:text-white opacity-0 group-hover:opacity-100",
           )}
         >
           <Heart className={cn("w-4 h-4", isLiked && "fill-current")} />

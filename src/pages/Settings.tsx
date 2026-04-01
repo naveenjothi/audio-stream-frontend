@@ -157,8 +157,8 @@ export default function SettingsPage() {
       className={cn(
         "min-h-screen transition-colors duration-300",
         resolvedTheme === "dark"
-          ? "bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950"
-          : "bg-gradient-to-br from-gray-100 via-gray-50 to-white",
+          ? "bg-linear-to-br from-zinc-950 via-zinc-900 to-zinc-950"
+          : "bg-linear-to-br from-gray-100 via-gray-50 to-white",
       )}
     >
       {/* Header */}
