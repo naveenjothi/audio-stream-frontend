@@ -1,17 +1,19 @@
-import Home from "@/pages/Home";
-import Login from "@/pages/Login";
-import Dashboard from "@/pages/Dashboard";
-import Pair from "@/pages/Pair";
-import Player from "@/pages/Player";
-import Settings from "@/pages/Settings";
-import { Navigate } from "react-router-dom";
+import {
+  CatchAllElement,
+  DashboardElement,
+  HomeElement,
+  LoginElement,
+  PairElement,
+  PlayerElement,
+  SettingsElement,
+} from "./elements";
 
-const routesConfig = [
-  { path: "/", element: <Home /> },
-  { path: "/login", element: <Login /> },
-  { path: "/dashboard", element: <Dashboard /> },
-  { path: "/pair", element: <Pair /> },
-  { path: "/player", element: <Player /> },
-  { path: "/settings", element: <Settings /> },
-  { path: "*", element: <Navigate to="/" replace /> },
+export const routesConfig = [
+  { path: "/", element: <HomeElement /> },
+  { path: "/login", element: <LoginElement /> },
+  { path: "/dashboard", element: <DashboardElement /> },
+  { path: "/pair", element: <PairElement /> },
+  { path: "/player", element: <PlayerElement /> },
+  { path: "/settings", element: <SettingsElement /> },
+  { path: "*", element: <CatchAllElement /> },
 ];
