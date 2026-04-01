@@ -1,7 +1,5 @@
-"use client";
-
 import { useEffect, createContext, useContext, ReactNode } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuthStore } from "@/store";
 import { onAuthChange } from "@/lib/firebase";
 import type { User } from "@/types";
@@ -58,14 +56,14 @@ export function useAuth() {
 // HOC for protecting routes
 export function AuthGuard({ children }: { children: ReactNode }) {
   const { isLoading, isAuthenticated } = useAuth();
-  const router = useRouter();
-  const pathname = usePathname();
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
-      router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
+      navigate(`/login?redirect=${encodeURIComponent(pathname)}`);
     }
-  }, [isLoading, isAuthenticated, router, pathname]);
+  }, [isLoading, isAuthenticated, navigate, pathname]);
 
   if (isLoading) {
     return (

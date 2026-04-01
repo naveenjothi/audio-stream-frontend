@@ -17,7 +17,6 @@ export async function createUser(request: CreateUserRequest): Promise<User> {
   const response = await catalogClient.post<{ data: User }>(
     "/api/v1/users",
     formData,
-    { headers: { "Content-Type": "multipart/form-data" } }
   );
   return extractData(response);
 }
@@ -26,10 +25,10 @@ export async function createUser(request: CreateUserRequest): Promise<User> {
  * Get user by Firebase ID
  */
 export async function getUserByFirebaseId(
-  firebaseId: string
+  firebaseId: string,
 ): Promise<User | null> {
   const response = await catalogClient.get<{ data: User | null }>(
-    `/api/v1/users/users/${firebaseId}`
+    `/api/v1/users/users/${firebaseId}`,
   );
   return extractData(response);
 }
@@ -39,11 +38,11 @@ export async function getUserByFirebaseId(
  */
 export async function updateUser(
   firebaseId: string,
-  request: UpdateUserRequest
+  request: UpdateUserRequest,
 ): Promise<User> {
   const response = await catalogClient.put<{ data: User }>(
     `/api/v1/users/users/${firebaseId}`,
-    request
+    request,
   );
   return extractData(response);
 }

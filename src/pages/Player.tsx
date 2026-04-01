@@ -1,7 +1,5 @@
-"use client";
-
 import { useEffect, useState, useRef } from "react";
-import Link from "next/link";
+import { Link } from "react-router-dom";
 import {
   Search,
   Disc3,
@@ -208,7 +206,7 @@ export default function PlayerPage() {
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-3">
                 <Link
-                  href="/dashboard"
+                  to="/dashboard"
                   className="p-2 -ml-2 transition-colors text-tps-muted hover:text-white group"
                 >
                   <ChevronLeft className="w-5 h-5 group-hover:-translate-x-0.5 transition-transform" />
@@ -244,7 +242,7 @@ export default function PlayerPage() {
                     compact
                   />
                 </div>
-                <Link href="/settings">
+                <Link to="/settings">
                   <button
                     className="p-2 transition-colors text-tps-muted hover:text-white rounded-full hover:bg-white/5"
                     title="Settings"

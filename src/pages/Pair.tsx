@@ -1,8 +1,5 @@
-"use client";
-
 import { useState, useRef } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Smartphone,
   ArrowLeft,
@@ -31,7 +28,7 @@ export default function PairPage() {
   const [errorMessage, setErrorMessage] = useState("");
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-  const router = useRouter();
+  const navigate = useNavigate();
   const { addToast } = useToast();
   const { setIsPairing, setPairingError, setConnectionStatus } =
     useDeviceStore();
@@ -100,7 +97,7 @@ export default function PairPage() {
 
         // Redirect to dashboard after delay
         setTimeout(() => {
-          router.push("/dashboard");
+          navigate("/dashboard");
         }, 2000);
       } else {
         setStatus("error");
@@ -148,7 +145,7 @@ export default function PairPage() {
         {/* Header */}
         <header className="w-full p-6 z-20 flex-shrink-0">
           <Link
-            href="/dashboard"
+            to="/dashboard"
             className="inline-flex items-center gap-2 text-tps-muted hover:text-white transition-colors group"
           >
             <div className="p-2 rounded-full group-hover:bg-white/5 transition-colors">

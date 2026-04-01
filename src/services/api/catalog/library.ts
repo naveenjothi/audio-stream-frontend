@@ -7,7 +7,7 @@ import type { Song, SyncRequest, SyncResponse } from "@/types/api";
 export async function getSongsForDevice(deviceId: string): Promise<Song[]> {
   const response = await catalogClient.get<{ data: Song[] }>(
     "/api/v1/library/songs",
-    { params: { device_id: deviceId } }
+    { device_id: deviceId },
   );
   return extractData(response);
 }
@@ -17,10 +17,10 @@ export async function getSongsForDevice(deviceId: string): Promise<Song[]> {
  * Returns 202 Accepted immediately. Show "Sync Started" toast, not a spinner.
  */
 export async function syncLibrary(
-  request: SyncRequest
+  request: SyncRequest,
 ): Promise<{ accepted: boolean; message?: string }> {
   const result = await handleAsyncEndpoint<SyncResponse>(
-    catalogClient.post("/api/v1/library/sync", request)
+    catalogClient.post("/api/v1/library/sync", request),
   );
   return {
     accepted: result.accepted,
