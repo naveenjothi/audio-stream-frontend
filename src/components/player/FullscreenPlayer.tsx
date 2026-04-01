@@ -180,7 +180,7 @@ export function FullscreenPlayer({
           animate={{ y: 0 }}
           exit={{ y: "100%" }}
           transition={{ type: "spring", damping: 30, stiffness: 300 }}
-          className="fixed inset-0 z-50 bg-gradient-to-b from-zinc-800 via-zinc-900 to-black"
+          className="fixed inset-0 z-50 bg-linear-to-b from-zinc-800 via-zinc-900 to-black"
         >
           {/* Dynamic background based on album art */}
           {displayTrack.albumArt && (
@@ -190,7 +190,7 @@ export function FullscreenPlayer({
                 alt=""
                 className="w-full h-full object-cover blur-3xl opacity-30 scale-110"
               />
-              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-zinc-900/80 to-black" />
+              <div className="absolute inset-0 bg-linear-to-b from-transparent via-zinc-900/80 to-black" />
             </div>
           )}
 
@@ -238,7 +238,7 @@ export function FullscreenPlayer({
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-zinc-700 to-zinc-900">
+                    <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-zinc-700 to-zinc-900">
                       <Disc3
                         className={cn(
                           "w-32 h-32 text-zinc-600",

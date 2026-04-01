@@ -30,7 +30,7 @@ const initialState: PlaybackState = {
   isMuted: false,
 };
 
-export const usePlayerStore = create<PlayerState>((set, get) => ({
+export const usePlayerStore = create<PlayerState>()((set, get) => ({
   ...initialState,
   queue: [],
   queueIndex: 0,

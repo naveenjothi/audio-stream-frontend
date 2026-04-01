@@ -1,7 +1,5 @@
-"use client";
-
 import { Suspense, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { AlertCircle } from "lucide-react";
 import { logOut, signInWithGoogle } from "@/lib/firebase";
 import { createUser, getUserByFirebaseId } from "@/services/api/catalog";
@@ -12,7 +10,7 @@ function LoginFormContent({ redirect }: { redirect: string }) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { addToast } = useToast();
-  const router = useRouter();
+  const navigate = useNavigate();
 
   const createDbUserIfNotExists = async (user: User): Promise<boolean> => {
     try {
@@ -53,7 +51,7 @@ function LoginFormContent({ redirect }: { redirect: string }) {
       const success = await createDbUserIfNotExists(user);
       if (success) {
         addToast("Signed In successfully", "success");
-        router.push(redirect);
+        navigate(redirect);
       } else {
         setIsLoading(false);
       }
@@ -68,7 +66,7 @@ function LoginFormContent({ redirect }: { redirect: string }) {
       {/* Error Alert */}
       {error && (
         <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 flex items-start gap-3 animate-pulse-slow">
-          <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+          <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
           <p className="text-red-400 text-sm">{error}</p>
         </div>
       )}
@@ -105,7 +103,7 @@ function LoginFormContent({ redirect }: { redirect: string }) {
 }
 
 function LoginFormWithParams() {
-  const searchParams = useSearchParams();
+  const [searchParams] = useSearchParams();
   const redirect = searchParams.get("redirect") || "/dashboard";
   return <LoginFormContent redirect={redirect} />;
 }

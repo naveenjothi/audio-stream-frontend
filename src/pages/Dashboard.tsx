@@ -1,8 +1,5 @@
-"use client";
-
 import { useState, useEffect } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { Link, useNavigate } from "react-router-dom";
 import {
   LogOut,
   Smartphone,
@@ -59,7 +56,7 @@ export default function DashboardPage() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [favorites, setFavorites] = useState<Song[]>([]);
 
-  const router = useRouter();
+  const navigate = useNavigate();
   const { user } = useAuth();
   const { addToast } = useToast();
   const {
@@ -155,7 +152,7 @@ export default function DashboardPage() {
       }).catch((err) => console.error("Failed to record history:", err));
     }
 
-    router.push("/player");
+    navigate("/player");
   };
 
   const handleLikeSong = async (songId: string, isLiked: boolean) => {
@@ -175,7 +172,7 @@ export default function DashboardPage() {
 
   const handleLogout = async () => {
     await logOut();
-    router.push("/login");
+    navigate("/login");
   };
 
   const greeting = () => {
@@ -206,7 +203,7 @@ export default function DashboardPage() {
                     className={cn("w-5 h-5", isRefreshing && "animate-spin")}
                   />
                 </button>
-                <Link href="/settings">
+                <Link to="/settings">
                   <button
                     className="p-2 hover:bg-white/5 rounded-full text-tps-muted hover:text-white transition-colors"
                     title="Settings"
@@ -306,13 +303,13 @@ export default function DashboardPage() {
                   </div>
                 </div>
 
-                <Link href="/pair">
+                <Link to="/pair">
                   <button
                     className={cn(
                       "px-6 py-3 rounded-full font-semibold flex items-center gap-2 transition-all shadow-lg",
                       connectedDevice
                         ? "bg-white/10 hover:bg-white/15 text-white ring-1 ring-white/10"
-                        : "bg-gradient-to-r from-tps-cyan to-blue-500 hover:shadow-tps-cyan/25 text-black border-none",
+                        : "bg-linear-to-r from-tps-cyan to-blue-500 hover:shadow-tps-cyan/25 text-black border-none",
                     )}
                   >
                     {connectedDevice ? "Manage Device" : "Connect Now"}
@@ -402,7 +399,7 @@ export default function DashboardPage() {
                         <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-xs font-bold text-tps-muted">
                           {i + 1}
                         </div>
-                        <span className="text-sm font-medium truncate max-w-[100px]">
+                        <span className="text-sm font-medium truncate max-w-25">
                           {artist.name}
                         </span>
                       </div>
@@ -465,7 +462,7 @@ export default function DashboardPage() {
                 Recently Synced
               </h2>
               <Link
-                href="/player"
+                to="/player"
                 className="flex items-center gap-1 text-sm text-tps-cyan hover:text-tps-lilac transition-colors font-medium"
               >
                 View all
@@ -479,14 +476,14 @@ export default function DashboardPage() {
                   <SongCardSkeleton key={i} />
                 ))}
               </div>
-            ) : stats?.recently_added?.length > 0 || songs.length > 0 ? (
+            ) : (stats?.recently_added?.length ?? 0) > 0 || songs.length > 0 ? (
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
-                {(stats?.recently_added?.length > 0
-                  ? stats.recently_added
+                {((stats?.recently_added?.length ?? 0) > 0
+                  ? stats!.recently_added!
                   : songs.slice(0, 6)
                 ).map((apiSong: ApiSong | Song, index: number) => {
                   const song =
-                    stats?.recently_added?.length > 0
+                    (stats?.recently_added?.length ?? 0) > 0
                       ? {
                           id: (apiSong as ApiSong).id,
                           title: (apiSong as ApiSong).name,
@@ -513,7 +510,7 @@ export default function DashboardPage() {
                           favorites.some((f) => f.id === song.id),
                         )
                       }
-                      showSyncedBadge={stats?.recently_added?.length > 0}
+                      showSyncedBadge={(stats?.recently_added?.length ?? 0) > 0}
                     />
                   );
                 })}
@@ -530,7 +527,7 @@ export default function DashboardPage() {
                   Sync your mobile device or add songs to your library to start
                   streaming in high fidelity.
                 </p>
-                <Link href="/pair">
+                <Link to="/pair">
                   <button className="px-6 py-2 rounded-full bg-white/10 hover:bg-white/15 text-white text-sm font-semibold transition-colors border border-white/10">
                     Pair Device
                   </button>
@@ -580,7 +577,7 @@ function SongCard({
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-tps-surface to-black border border-white/5">
+            <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-tps-surface to-black border border-white/5">
               <Disc3 className="w-10 h-10 text-tps-muted" />
             </div>
           )}

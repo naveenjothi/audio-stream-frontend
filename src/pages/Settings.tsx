@@ -1,7 +1,5 @@
-"use client";
-
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   ArrowLeft,
@@ -33,7 +31,7 @@ import { useToast } from "@/components/shared";
 import { cn } from "@/lib/utils";
 
 export default function SettingsPage() {
-  const router = useRouter();
+  const navigate = useNavigate();
   const { theme, setTheme, resolvedTheme } = useThemeStore();
   const { user, logout: storeLogout } = useAuthStore();
   const { addToast } = useToast();
@@ -137,7 +135,7 @@ export default function SettingsPage() {
       if (result.success) {
         storeLogout();
         addToast("Account deleted successfully", "success");
-        router.push("/login");
+        navigate("/login");
       } else {
         addToast(getErrorMessage(result.error?.message || ""), "error");
       }
@@ -151,7 +149,7 @@ export default function SettingsPage() {
   const handleLogout = async () => {
     await logOut();
     storeLogout();
-    router.push("/login");
+    navigate("/login");
   };
 
   return (
@@ -159,8 +157,8 @@ export default function SettingsPage() {
       className={cn(
         "min-h-screen transition-colors duration-300",
         resolvedTheme === "dark"
-          ? "bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950"
-          : "bg-gradient-to-br from-gray-100 via-gray-50 to-white"
+          ? "bg-linear-to-br from-zinc-950 via-zinc-900 to-zinc-950"
+          : "bg-linear-to-br from-gray-100 via-gray-50 to-white",
       )}
     >
       {/* Header */}
@@ -169,17 +167,17 @@ export default function SettingsPage() {
           "sticky top-0 z-40 border-b backdrop-blur-xl",
           resolvedTheme === "dark"
             ? "bg-zinc-950/80 border-zinc-800"
-            : "bg-gray-50/80 border-gray-200"
+            : "bg-gray-50/80 border-gray-200",
         )}
       >
         <div className="max-w-2xl mx-auto px-4 h-16 flex items-center gap-4">
           <button
-            onClick={() => router.back()}
+            onClick={() => navigate(-1)}
             className={cn(
               "p-2 rounded-full transition-colors",
               resolvedTheme === "dark"
                 ? "hover:bg-zinc-800 text-zinc-400 hover:text-white"
-                : "hover:bg-gray-100 text-gray-600 hover:text-gray-900"
+                : "hover:bg-gray-100 text-gray-600 hover:text-gray-900",
             )}
           >
             <ArrowLeft className="w-5 h-5" />
@@ -187,7 +185,7 @@ export default function SettingsPage() {
           <h1
             className={cn(
               "text-xl font-bold",
-              resolvedTheme === "dark" ? "text-white" : "text-zinc-900"
+              resolvedTheme === "dark" ? "text-white" : "text-zinc-900",
             )}
           >
             Settings
@@ -204,14 +202,14 @@ export default function SettingsPage() {
             "rounded-2xl p-6 border",
             resolvedTheme === "dark"
               ? "bg-zinc-900/50 border-zinc-800"
-              : "bg-gray-100/50 border-gray-200 shadow-sm"
+              : "bg-gray-100/50 border-gray-200 shadow-sm",
           )}
         >
           <div className="flex items-center gap-4">
             <div
               className={cn(
                 "w-16 h-16 rounded-full flex items-center justify-center overflow-hidden",
-                resolvedTheme === "dark" ? "bg-zinc-800" : "bg-gray-100"
+                resolvedTheme === "dark" ? "bg-zinc-800" : "bg-gray-100",
               )}
             >
               {user?.photoURL ? (
@@ -225,7 +223,9 @@ export default function SettingsPage() {
                 <User
                   className={cn(
                     "w-8 h-8",
-                    resolvedTheme === "dark" ? "text-zinc-400" : "text-gray-500"
+                    resolvedTheme === "dark"
+                      ? "text-zinc-400"
+                      : "text-gray-500",
                   )}
                 />
               )}
@@ -234,7 +234,7 @@ export default function SettingsPage() {
               <h2
                 className={cn(
                   "text-lg font-semibold",
-                  resolvedTheme === "dark" ? "text-white" : "text-zinc-900"
+                  resolvedTheme === "dark" ? "text-white" : "text-zinc-900",
                 )}
               >
                 {user?.displayName || "User"}
@@ -242,7 +242,7 @@ export default function SettingsPage() {
               <p
                 className={cn(
                   "text-sm",
-                  resolvedTheme === "dark" ? "text-zinc-400" : "text-gray-500"
+                  resolvedTheme === "dark" ? "text-zinc-400" : "text-gray-500",
                 )}
               >
                 {user?.email}
@@ -254,7 +254,7 @@ export default function SettingsPage() {
                       "text-xs px-2 py-0.5 rounded-full",
                       resolvedTheme === "dark"
                         ? "bg-zinc-700 text-zinc-300"
-                        : "bg-gray-200 text-gray-600"
+                        : "bg-gray-200 text-gray-600",
                     )}
                   >
                     Email
@@ -266,7 +266,7 @@ export default function SettingsPage() {
                       "text-xs px-2 py-0.5 rounded-full",
                       resolvedTheme === "dark"
                         ? "bg-blue-500/20 text-blue-400"
-                        : "bg-blue-100 text-blue-600"
+                        : "bg-blue-100 text-blue-600",
                     )}
                   >
                     Google
@@ -289,7 +289,7 @@ export default function SettingsPage() {
             "rounded-2xl p-6 border",
             resolvedTheme === "dark"
               ? "bg-zinc-900/50 border-zinc-800"
-              : "bg-gray-100/50 border-gray-200 shadow-sm"
+              : "bg-gray-100/50 border-gray-200 shadow-sm",
           )}
         >
           <div className="flex items-center gap-3 mb-6">
@@ -300,7 +300,7 @@ export default function SettingsPage() {
               <h2
                 className={cn(
                   "text-lg font-semibold",
-                  resolvedTheme === "dark" ? "text-white" : "text-zinc-900"
+                  resolvedTheme === "dark" ? "text-white" : "text-zinc-900",
                 )}
               >
                 Appearance
@@ -308,7 +308,7 @@ export default function SettingsPage() {
               <p
                 className={cn(
                   "text-sm",
-                  resolvedTheme === "dark" ? "text-zinc-400" : "text-gray-500"
+                  resolvedTheme === "dark" ? "text-zinc-400" : "text-gray-500",
                 )}
               >
                 Customize how the app looks
@@ -329,8 +329,8 @@ export default function SettingsPage() {
                     isActive
                       ? "border-primary-500 bg-primary-500/10"
                       : resolvedTheme === "dark"
-                      ? "border-zinc-700 hover:border-zinc-600 bg-zinc-800/50"
-                      : "border-gray-200 hover:border-gray-300 bg-gray-50"
+                        ? "border-zinc-700 hover:border-zinc-600 bg-zinc-800/50"
+                        : "border-gray-200 hover:border-gray-300 bg-gray-50",
                   )}
                 >
                   <Icon
@@ -339,8 +339,8 @@ export default function SettingsPage() {
                       isActive
                         ? "text-primary-500"
                         : resolvedTheme === "dark"
-                        ? "text-zinc-400"
-                        : "text-gray-500"
+                          ? "text-zinc-400"
+                          : "text-gray-500",
                     )}
                   />
                   <span
@@ -349,8 +349,8 @@ export default function SettingsPage() {
                       isActive
                         ? "text-primary-500"
                         : resolvedTheme === "dark"
-                        ? "text-zinc-300"
-                        : "text-gray-700"
+                          ? "text-zinc-300"
+                          : "text-gray-700",
                     )}
                   >
                     {option.label}
@@ -375,7 +375,7 @@ export default function SettingsPage() {
             "rounded-2xl p-6 border",
             resolvedTheme === "dark"
               ? "bg-zinc-900/50 border-zinc-800"
-              : "bg-gray-100/50 border-gray-200 shadow-sm"
+              : "bg-gray-100/50 border-gray-200 shadow-sm",
           )}
         >
           <div className="flex items-center gap-3 mb-6">
@@ -386,7 +386,7 @@ export default function SettingsPage() {
               <h2
                 className={cn(
                   "text-lg font-semibold",
-                  resolvedTheme === "dark" ? "text-white" : "text-zinc-900"
+                  resolvedTheme === "dark" ? "text-white" : "text-zinc-900",
                 )}
               >
                 {hasPassword ? "Update Password" : "Create Password"}
@@ -394,7 +394,7 @@ export default function SettingsPage() {
               <p
                 className={cn(
                   "text-sm",
-                  resolvedTheme === "dark" ? "text-zinc-400" : "text-gray-500"
+                  resolvedTheme === "dark" ? "text-zinc-400" : "text-gray-500",
                 )}
               >
                 {hasPassword
@@ -410,7 +410,9 @@ export default function SettingsPage() {
                 <label
                   className={cn(
                     "block text-sm font-medium mb-2",
-                    resolvedTheme === "dark" ? "text-zinc-300" : "text-gray-700"
+                    resolvedTheme === "dark"
+                      ? "text-zinc-300"
+                      : "text-gray-700",
                   )}
                 >
                   Current Password
@@ -421,7 +423,7 @@ export default function SettingsPage() {
                       "absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5",
                       resolvedTheme === "dark"
                         ? "text-zinc-500"
-                        : "text-gray-400"
+                        : "text-gray-400",
                     )}
                   />
                   <input
@@ -439,7 +441,7 @@ export default function SettingsPage() {
                       "absolute right-3 top-1/2 -translate-y-1/2 transition-colors",
                       resolvedTheme === "dark"
                         ? "text-zinc-500 hover:text-zinc-300"
-                        : "text-gray-400 hover:text-gray-600"
+                        : "text-gray-400 hover:text-gray-600",
                     )}
                   >
                     {showCurrentPassword ? (
@@ -456,7 +458,7 @@ export default function SettingsPage() {
               <label
                 className={cn(
                   "block text-sm font-medium mb-2",
-                  resolvedTheme === "dark" ? "text-zinc-300" : "text-gray-700"
+                  resolvedTheme === "dark" ? "text-zinc-300" : "text-gray-700",
                 )}
               >
                 New Password
@@ -465,7 +467,9 @@ export default function SettingsPage() {
                 <Lock
                   className={cn(
                     "absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5",
-                    resolvedTheme === "dark" ? "text-zinc-500" : "text-gray-400"
+                    resolvedTheme === "dark"
+                      ? "text-zinc-500"
+                      : "text-gray-400",
                   )}
                 />
                 <input
@@ -484,7 +488,7 @@ export default function SettingsPage() {
                     "absolute right-3 top-1/2 -translate-y-1/2 transition-colors",
                     resolvedTheme === "dark"
                       ? "text-zinc-500 hover:text-zinc-300"
-                      : "text-gray-400 hover:text-gray-600"
+                      : "text-gray-400 hover:text-gray-600",
                   )}
                 >
                   {showNewPassword ? (
@@ -500,7 +504,7 @@ export default function SettingsPage() {
               <label
                 className={cn(
                   "block text-sm font-medium mb-2",
-                  resolvedTheme === "dark" ? "text-zinc-300" : "text-gray-700"
+                  resolvedTheme === "dark" ? "text-zinc-300" : "text-gray-700",
                 )}
               >
                 Confirm New Password
@@ -509,7 +513,9 @@ export default function SettingsPage() {
                 <Lock
                   className={cn(
                     "absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5",
-                    resolvedTheme === "dark" ? "text-zinc-500" : "text-gray-400"
+                    resolvedTheme === "dark"
+                      ? "text-zinc-500"
+                      : "text-gray-400",
                   )}
                 />
                 <input
@@ -528,7 +534,7 @@ export default function SettingsPage() {
                     "absolute right-3 top-1/2 -translate-y-1/2 transition-colors",
                     resolvedTheme === "dark"
                       ? "text-zinc-500 hover:text-zinc-300"
-                      : "text-gray-400 hover:text-gray-600"
+                      : "text-gray-400 hover:text-gray-600",
                   )}
                 >
                   {showConfirmPassword ? (
@@ -568,7 +574,7 @@ export default function SettingsPage() {
             "rounded-2xl p-6 border",
             resolvedTheme === "dark"
               ? "bg-red-500/5 border-red-500/20"
-              : "bg-red-50 border-red-200"
+              : "bg-red-50 border-red-200",
           )}
         >
           <div className="flex items-center gap-3 mb-6">
@@ -579,7 +585,7 @@ export default function SettingsPage() {
               <h2
                 className={cn(
                   "text-lg font-semibold",
-                  resolvedTheme === "dark" ? "text-red-400" : "text-red-700"
+                  resolvedTheme === "dark" ? "text-red-400" : "text-red-700",
                 )}
               >
                 Danger Zone
@@ -587,7 +593,7 @@ export default function SettingsPage() {
               <p
                 className={cn(
                   "text-sm",
-                  resolvedTheme === "dark" ? "text-red-400/70" : "text-red-600"
+                  resolvedTheme === "dark" ? "text-red-400/70" : "text-red-600",
                 )}
               >
                 Irreversible and destructive actions
@@ -610,13 +616,13 @@ export default function SettingsPage() {
                   "p-4 rounded-lg",
                   resolvedTheme === "dark"
                     ? "bg-red-500/10 border border-red-500/20"
-                    : "bg-red-100 border border-red-200"
+                    : "bg-red-100 border border-red-200",
                 )}
               >
                 <p
                   className={cn(
                     "text-sm",
-                    resolvedTheme === "dark" ? "text-red-400" : "text-red-700"
+                    resolvedTheme === "dark" ? "text-red-400" : "text-red-700",
                   )}
                 >
                   This action cannot be undone. This will permanently delete
@@ -631,7 +637,7 @@ export default function SettingsPage() {
                       "block text-sm font-medium mb-2",
                       resolvedTheme === "dark"
                         ? "text-zinc-300"
-                        : "text-gray-700"
+                        : "text-gray-700",
                     )}
                   >
                     Enter your password to confirm
@@ -642,7 +648,7 @@ export default function SettingsPage() {
                         "absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5",
                         resolvedTheme === "dark"
                           ? "text-zinc-500"
-                          : "text-gray-400"
+                          : "text-gray-400",
                       )}
                     />
                     <input
@@ -659,7 +665,7 @@ export default function SettingsPage() {
                         "absolute right-3 top-1/2 -translate-y-1/2 transition-colors",
                         resolvedTheme === "dark"
                           ? "text-zinc-500 hover:text-zinc-300"
-                          : "text-gray-400 hover:text-gray-600"
+                          : "text-gray-400 hover:text-gray-600",
                       )}
                     >
                       {showDeletePassword ? (
@@ -676,7 +682,9 @@ export default function SettingsPage() {
                 <label
                   className={cn(
                     "block text-sm font-medium mb-2",
-                    resolvedTheme === "dark" ? "text-zinc-300" : "text-gray-700"
+                    resolvedTheme === "dark"
+                      ? "text-zinc-300"
+                      : "text-gray-700",
                   )}
                 >
                   Type <span className="font-bold text-red-500">DELETE</span> to

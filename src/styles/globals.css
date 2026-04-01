@@ -1,8 +1,8 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap");
+
+@import "tailwindcss";
+@config "../../tailwind.config.ts";
+@plugin "tailwindcss-animate";
 
 @layer base {
   :root {
@@ -48,14 +48,22 @@
   /* Dark theme (default) */
   .dark body {
     @apply bg-tps-charcoal text-white antialiased font-sans;
-    background-image: 
-      radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.15), transparent 40%),
-      radial-gradient(circle at 0% 50%, rgba(59, 130, 246, 0.1), transparent 40%);
+    background-image:
+      radial-gradient(
+        circle at 50% 0%,
+        rgba(16, 185, 129, 0.15),
+        transparent 40%
+      ),
+      radial-gradient(
+        circle at 0% 50%,
+        rgba(59, 130, 246, 0.1),
+        transparent 40%
+      );
     background-attachment: fixed;
   }
-  
+
   .dark ::selection {
-      @apply bg-tps-cyan/30 text-white;
+    @apply bg-tps-cyan/30 text-white;
   }
 
   /* Light theme */
@@ -218,7 +226,7 @@
 
 @layer utilities {
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary-400 via-primary-300 to-primary-500;
+    @apply bg-clip-text text-transparent bg-linear-to-r from-primary-400 via-primary-300 to-primary-500;
   }
 
   .glow {
@@ -246,7 +254,9 @@
   }
 
   .neon-border {
-    box-shadow: 0 0 10px rgba(16, 185, 129, 0.2), inset 0 0 10px rgba(16, 185, 129, 0.1);
+    box-shadow:
+      0 0 10px rgba(16, 185, 129, 0.2),
+      inset 0 0 10px rgba(16, 185, 129, 0.1);
     border-color: rgba(16, 185, 129, 0.3);
   }
 }
@@ -267,7 +277,8 @@
 
 /* Float animation */
 @keyframes float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
   50% {
@@ -278,8 +289,6 @@
 .animate-float {
   animation: float 6s ease-in-out infinite;
 }
-
-
 
 @layer base {
   * {

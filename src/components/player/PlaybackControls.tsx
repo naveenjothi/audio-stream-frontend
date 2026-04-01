@@ -119,7 +119,7 @@ export function PlaybackControls({
             buttonSize[size],
           )}
         >
-          <div className="absolute inset-0 bg-gradient-to-tr from-zinc-200 to-white opacity-100 group-hover:opacity-90 transition-opacity" />
+          <div className="absolute inset-0 bg-linear-to-tr from-zinc-200 to-white opacity-100 group-hover:opacity-90 transition-opacity" />
 
           <AnimatePresence mode="wait">
             {isLoading || isBuffering ? (

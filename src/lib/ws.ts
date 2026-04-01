@@ -2,7 +2,7 @@ import { getIdToken } from "./firebase";
 import type { SignalingMessage, PlaybackEvent } from "@/types";
 
 const WS_BASE_URL =
-  process.env.NEXT_PUBLIC_WS_BASE_URL || "ws://localhost:8080/ws";
+  import.meta.env.VITE_WS_BASE_URL || "ws://localhost:8080/ws";
 
 type MessageHandler = (data: unknown) => void;
 type CloseHandler = (event: CloseEvent) => void;
@@ -43,7 +43,7 @@ class WebSocketClient {
     }
 
     const url = `${WS_BASE_URL}${this.endpoint}?token=${encodeURIComponent(
-      token
+      token,
     )}`;
 
     return new Promise((resolve, reject) => {
@@ -95,7 +95,7 @@ class WebSocketClient {
 
     this.reconnectAttempts++;
     console.log(
-      `Attempting reconnect ${this.reconnectAttempts}/${this.options.maxReconnectAttempts}`
+      `Attempting reconnect ${this.reconnectAttempts}/${this.options.maxReconnectAttempts}`,
     );
 
     this.reconnectTimeout = setTimeout(() => {
@@ -129,7 +129,7 @@ class WebSocketClient {
 // Signaling WebSocket for WebRTC
 export function createSignalingClient(
   onMessage: (message: SignalingMessage) => void,
-  onConnectionChange?: (connected: boolean) => void
+  onConnectionChange?: (connected: boolean) => void,
 ): WebSocketClient {
   return new WebSocketClient("/rtc/signal", {
     onMessage: (data) => onMessage(data as SignalingMessage),
@@ -142,7 +142,7 @@ export function createSignalingClient(
 // Playback State WebSocket
 export function createPlaybackClient(
   onEvent: (event: PlaybackEvent) => void,
-  onConnectionChange?: (connected: boolean) => void
+  onConnectionChange?: (connected: boolean) => void,
 ): WebSocketClient {
   return new WebSocketClient("/playback/state", {
     onMessage: (data) => onEvent(data as PlaybackEvent),
